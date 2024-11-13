@@ -1,8 +1,9 @@
 package lk.ac.iit.RealTimeTicket;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Scanner;
 
 @Component
@@ -136,5 +137,5 @@ public class TicketSystemConfig implements Serializable {
     public int getMaxTicketCapacity() {
         return maxTicketCapacity;
     }
-}
 
+}
