@@ -12,23 +12,25 @@ public class VendorService {
     @Autowired
     private TicketSystemService ticketSystemService;
 
+    @Autowired
+    private TicketService ticketService;
+
     private static final Logger logger = (Logger) LoggerFactory.getLogger(VendorService.class);
 
 
     @Async
-    public void releaseTickets(String vendorName) {
-        while (ticketSystemService.getTicketsAvailable() > 0) {
-                    ticketSystemService.releaseTicket(vendorName);
-                    try {
-                        Thread.sleep((int) (2000)); // Simulate variable processing time
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
+    public void releaseTickets(Long vendorName) throws InterruptedException {
+        while (ticketService.getAvailableTickets() > 0) {
+            System.out.println("ticketService.getAvailableTickets()"+ticketService.getAvailableTickets());
+
+            String acquiredTicket = ticketService.acquireTicket();
+            System.out.println("vendorName : "+vendorName +" -> acquiredTicket : "+acquiredTicket);
+            try {
+                Thread.sleep((int) (2000)); // Simulate variable processing time
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
-    @Async
-    public void createVendor(Vendor vendor) {
-        vendor.run();
-    }
 }

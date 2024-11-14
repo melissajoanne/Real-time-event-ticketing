@@ -13,8 +13,8 @@ public class VendorController {
     private VendorService vendorService;
 
     @PostMapping("/")
-    public String createVendor(@RequestBody Vendor vendor) {
-        vendorService.createVendor(vendor);
+    public String createVendor(@RequestBody Vendor vendor) throws InterruptedException {
+        vendorService.releaseTickets(vendor.getVendorId());
         return "Ticket release started for multiple vendors!";
     }
 

@@ -1,5 +1,6 @@
 package lk.ac.iit.RealTimeTicket.model;
 import jakarta.persistence.*;
+import lk.ac.iit.RealTimeTicket.services.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 
 @Entity
-public class Vendor implements Runnable {
+public class Vendor {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(nullable = false)
@@ -53,15 +54,6 @@ public class Vendor implements Runnable {
 
     private static final Logger logger = (Logger) LoggerFactory.getLogger(Vendor.class);
 
-    @Override
-    public void run() {
-        logger.info("Running with vendor ID: " + vendorId + ", Release Interval: " + releaseInterval + ", Tickets per Release: " + ticketsPerRelease);
-
-
-        logger.info("Finished with vendor ID: " + vendorId + ", Release Interval: " + releaseInterval + ", Tickets per Release: " + ticketsPerRelease);
-
-
-    }
 
     }
 
