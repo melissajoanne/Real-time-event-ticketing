@@ -1,6 +1,8 @@
 package lk.ac.iit.RealTimeTicket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lk.ac.iit.RealTimeTicket.common.JsonFileUtility;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -13,12 +15,27 @@ public class TicketSystemConfig implements Serializable {
     private double customerRetrievalRate;
     private int maxTicketCapacity;
 
+    @Autowired
+    private JsonFileUtility jsonFileUtility;
 
     public TicketSystemConfig() {
         this.totalTickets = totalTickets;
         this.customerRetrievalRate = customerRetrievalRate;
         this.ticketReleaseRate = ticketReleaseRate;
         this.maxTicketCapacity = maxTicketCapacity;
+    }
+
+    public String saveJson() {
+        try {
+            jsonFileUtility.saveObjectAsJsonFile(this, "ticketConfig.json");
+            System.out.println("JSON file saved successfully!");
+            return "JSON file saved successfully!";
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error saving JSON file!");
+
+            return "Error saving JSON file!";
+        }
     }
 
     public void configureSystem() {
@@ -111,6 +128,7 @@ public class TicketSystemConfig implements Serializable {
         }
 
         displayConfiguration();
+        saveJson();
     }
 
     public void displayConfiguration() {
