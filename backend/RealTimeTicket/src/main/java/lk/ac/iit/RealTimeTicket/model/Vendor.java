@@ -7,24 +7,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 
 @Entity
-public class Vendor {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Vendor extends User {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private long vendorId;
     private int ticketsPerRelease;
     private int releaseInterval;
 
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ticket> tickets;
 
-    public Vendor(@Value("${vendor.ticketsPerRelease}") int ticketsPerRelease,
-                  @Value("${vendor.releaseInterval}") int releaseInterval) {
+
+    public Vendor(String name, String email, int ticketsPerRelease,
+                  int releaseInterval) {
+        super(name, email); // Calling the parent class constructor
         this.ticketsPerRelease = ticketsPerRelease;
         this.releaseInterval = releaseInterval;
     }
 
     public Vendor() {
+        super();
 
     }
 
@@ -52,9 +61,9 @@ public class Vendor {
         this.releaseInterval = releaseInterval;
     }
 
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(Vendor.class);
+    private static final Logger logger = LoggerFactory.getLogger(Vendor.class);
 
+}
 
-    }
 
 

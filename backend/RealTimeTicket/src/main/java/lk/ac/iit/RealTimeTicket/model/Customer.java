@@ -1,7 +1,6 @@
 package lk.ac.iit.RealTimeTicket.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,21 +8,35 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Component
+import java.util.List;
+
+
 @Entity
-public class Customer implements Runnable {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Customer extends User {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
     private long customerId;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ticket> tickets;
+
     private int retrievalInterval;
 
-
-    public Customer(@Value("${customer.customerId}") long customerId,
-    @Value("${customer.retrievalInterval}") int retrievalInterval) {
-        this.customerId = customerId;
-        this.retrievalInterval = retrievalInterval;
+    public Customer() {
     }
 
-    public long getId() {
+    public Customer(@Value("${customer.customerId}") long customerId,
+                    @Value("${customer.retrievalInterval}") int retrievalInterval) {
+        this.customerId = customerId;
+        this.retrievalInterval = retrievalInterval;
+
+    }
+
+
+
+    public long getCustomerId() {
         return customerId;
     }
 
@@ -38,10 +51,5 @@ public class Customer implements Runnable {
     public void setRetrievalInterval(int retrievalInterval) {
         this.retrievalInterval = retrievalInterval;
     }
-    private static final Logger logger = LoggerFactory.getLogger(Customer.class);
 
-    @Override
-    public void run() {
-        logger.info("Running with ID: " + customerId + ", Retrieval Interval: " + retrievalInterval);
-    }
 }
