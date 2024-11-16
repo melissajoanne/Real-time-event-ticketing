@@ -19,6 +19,7 @@ public class TicketService {
 
     public Ticket acquireTicket() throws InterruptedException {
         return ticketPool.acquireTicket();
+
     }
 
     public void releaseTicket(Ticket ticket) throws InterruptedException {
@@ -35,5 +36,6 @@ public class TicketService {
     }
 
     public Queue<Ticket> getTicketQueue() { return ticketPool.getTicketQueue(); }
+
 
 }

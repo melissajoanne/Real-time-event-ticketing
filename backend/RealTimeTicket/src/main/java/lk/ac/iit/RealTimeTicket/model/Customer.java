@@ -25,11 +25,12 @@ public class Customer extends User {
     private int retrievalInterval;
 
     public Customer() {
+        super();
     }
 
-    public Customer(@Value("${customer.customerId}") long customerId,
-                    @Value("${customer.retrievalInterval}") int retrievalInterval) {
-        this.customerId = customerId;
+    public Customer(String name, String email,
+                    int retrievalInterval) {
+        super(name, email);
         this.retrievalInterval = retrievalInterval;
 
     }
