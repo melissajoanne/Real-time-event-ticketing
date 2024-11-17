@@ -1,7 +1,9 @@
 package lk.ac.iit.RealTimeTicket.services;
 
+import lk.ac.iit.RealTimeTicket.Repo.TicketRepo;
 import lk.ac.iit.RealTimeTicket.model.Ticket;
 import lk.ac.iit.RealTimeTicket.model.TicketPool;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -38,4 +40,11 @@ public class TicketService {
     public Queue<Ticket> getTicketQueue() { return ticketPool.getTicketQueue(); }
 
 
+    @Autowired
+    private TicketRepo ticketRepo;
+
+
+    public void save(Ticket ticket) {
+        ticketRepo.save(ticket);
+    }
 }

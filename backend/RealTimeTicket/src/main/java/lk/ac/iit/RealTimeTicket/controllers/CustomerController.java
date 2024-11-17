@@ -17,17 +17,19 @@ import org.springframework.web.bind.annotation.*;
     private CustomerService customerService;
 
     @PostMapping("/tickets")
-        public String acquireTickets(@RequestBody Customer customer) throws InterruptedException {
-            customerService.acquireTickets(String.valueOf(customer));
-            return "Tickets retrieved by multiple customers!";
+    public String acquireTickets(@RequestBody Customer customer) throws InterruptedException {
+        customerService.acquireTickets(String.valueOf(customer));
+        return "Tickets retrieved by multiple customers!";
+
     }
+}
    /* public ResponseEntity<String> acquireTickets(@PathVariable String customerName) {
         try {
             customerService.acquireTickets(customerName);
             return ResponseEntity.ok("Customer " + customerName + " is acquiring tickets asynchronously.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("An error occurred: " + e.getMessage());*/
-        }
+
 
 
 

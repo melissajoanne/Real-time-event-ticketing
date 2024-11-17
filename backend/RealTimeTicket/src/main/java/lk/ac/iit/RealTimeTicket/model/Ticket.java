@@ -9,6 +9,26 @@ public class Ticket {
     @Column(nullable = false)
     private Long ticketId;
 
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false) // Foreign key in the Ticket table
+    private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "vendor_id", nullable = false) // Foreign key in the Ticket table
+    private Vendor vendor;
+
+    @ManyToOne
+    @JoinColumn(name = "status_ticket_id")
+    private Ticket status;
+
+    public Ticket getStatus() {
+        return status;
+    }
+
+    public void setStatus(Ticket status) {
+        this.status = status;
+    }
+
     public Ticket(Vendor vendor) {
         this.vendor = vendor;
     }
@@ -41,11 +61,5 @@ public class Ticket {
         this.vendor = vendor;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false) // Foreign key in the Ticket table
-    private Customer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "vendor_id", nullable = false) // Foreign key in the Ticket table
-    private Vendor vendor;
 }

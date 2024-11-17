@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
