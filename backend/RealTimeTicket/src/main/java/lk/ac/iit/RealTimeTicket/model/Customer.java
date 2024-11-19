@@ -1,6 +1,8 @@
 package lk.ac.iit.RealTimeTicket.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +14,19 @@ import java.util.List;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorValue("Customer")
 public class Customer extends User {
+    @Getter
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long customerId;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets;
 
+    @Setter
+    @Getter
     private int retrievalInterval;
 
     public Customer() {
@@ -36,21 +41,8 @@ public class Customer extends User {
     }
 
 
-
-    public long getCustomerId() {
-        return customerId;
-    }
-
     public void setId(long customerId) {
         this.customerId = customerId;
-    }
-
-    public int getRetrievalInterval() {
-        return retrievalInterval;
-    }
-
-    public void setRetrievalInterval(int retrievalInterval) {
-        this.retrievalInterval = retrievalInterval;
     }
 
 }

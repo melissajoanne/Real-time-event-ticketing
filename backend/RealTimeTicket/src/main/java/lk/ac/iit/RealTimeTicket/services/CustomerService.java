@@ -22,7 +22,7 @@ public class CustomerService {
      *
      * @param customerName the name of the customer
      */
-    @Async
+   @Async
     public void acquireTickets(String customerName) {
         logger.info("Customer {} started acquiring tickets.", customerName);
 
@@ -46,4 +46,3 @@ public class CustomerService {
         logger.info("Customer {} has finished acquiring tickets. No tickets available.", customerName);
     }
 }
-

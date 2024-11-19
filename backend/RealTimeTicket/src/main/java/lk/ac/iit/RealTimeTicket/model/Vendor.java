@@ -1,6 +1,8 @@
 package lk.ac.iit.RealTimeTicket.model;
 import jakarta.persistence.*;
 import lk.ac.iit.RealTimeTicket.services.TicketService;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +13,20 @@ import java.util.List;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorValue("Vendor")
 public class Vendor extends User {
 
+    @Setter
+    @Getter
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long vendorId;
+    @Setter
+    @Getter
     private int ticketsPerRelease;
+    @Setter
+    @Getter
     private int releaseInterval;
 
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,30 +43,6 @@ public class Vendor extends User {
     public Vendor() {
         super();
 
-    }
-
-    public long getVendorId() {
-        return vendorId;
-    }
-
-    public void setVendorId(long vendorId) {
-        this.vendorId = vendorId;
-    }
-
-    public int getTicketsPerRelease() {
-        return ticketsPerRelease;
-    }
-
-    public void setTicketsPerRelease(int ticketsPerRelease) {
-        this.ticketsPerRelease = ticketsPerRelease;
-    }
-
-    public int getReleaseInterval() {
-        return releaseInterval;
-    }
-
-    public void setReleaseInterval(int releaseInterval) {
-        this.releaseInterval = releaseInterval;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(Vendor.class);
