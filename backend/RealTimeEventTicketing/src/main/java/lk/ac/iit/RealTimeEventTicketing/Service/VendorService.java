@@ -1,6 +1,9 @@
 package lk.ac.iit.RealTimeEventTicketing.Service;
+import lk.ac.iit.RealTimeEventTicketing.Config;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
 import lk.ac.iit.RealTimeEventTicketing.repo.VendorRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,12 +11,18 @@ import java.util.List;
 
 @Service
 public class VendorService {
-    private final VendorRepo vendorRepo;
+
+    private final Config config;
 
     @Autowired
-    public VendorService(VendorRepo vendorRepo) {
-        this.vendorRepo = vendorRepo;
+    private VendorRepo vendorRepo;
+
+    private static final Logger logger=(Logger) LoggerFactory.getLogger(VendorService.class);
+
+    public VendorService(Config config) {
+        this.config = config;
     }
+
 
     public Vendor addVendor(Vendor vendor) {
         return vendorRepo.save(vendor);
