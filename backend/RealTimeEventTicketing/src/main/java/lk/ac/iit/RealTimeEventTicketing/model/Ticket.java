@@ -1,25 +1,21 @@
 package lk.ac.iit.RealTimeEventTicketing.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.Data;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private Long ticketId;
-    private String eventName;
+    private String type;
+    private double price;
+    private String status;
 
     public Ticket() {
-    }
-
-    public Ticket(String eventName) {
-        this.eventName = eventName;
-    }
-
-    public Ticket(Long ticketId, String eventName) {
-        this.ticketId = ticketId;
-        this.eventName = eventName;
     }
 
     public Long getTicketId() {
@@ -30,18 +26,27 @@ public class Ticket {
         this.ticketId = ticketId;
     }
 
-    public String getEventName() {
-        return eventName;
+    public String getType() {
+        return type;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setType(String type) {
+        this.type = type;
     }
-    @Override
-    public String toString() {
-        return "Ticket{" +
-                "ticketId=" + ticketId +
-                ", eventName='" + eventName + '\'' +
-                '}';
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

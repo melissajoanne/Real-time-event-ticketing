@@ -23,7 +23,6 @@ public class VendorService {
         this.config = config;
     }
 
-
     public Vendor addVendor(Vendor vendor) {
         return vendorRepo.save(vendor);
     }

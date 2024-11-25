@@ -1,40 +1,37 @@
 package lk.ac.iit.RealTimeEventTicketing.Service;
-import lk.ac.iit.RealTimeEventTicketing.model.TicketPool;
-import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
-import lk.ac.iit.RealTimeEventTicketing.repo.TicketPoolRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+
+
+import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 public class TicketPoolService {
-    private final TicketPoolRepo ticketPoolRepo;
 
-    @Autowired
-    public TicketPoolService(TicketPoolRepo ticketPoolRepo) {
-        this.ticketPoolRepo = ticketPoolRepo;
-    }
-
-    public TicketPool addTicketPool(TicketPool ticketPool) {
-        return ticketPoolRepo.save(ticketPool);
-    }
-
-    public TicketPool updateTicketPool(TicketPool ticketPool) {
-        return ticketPoolRepo.save(ticketPool);
-    }
-
- public TicketPool getTicketPoolById(Long id) {
-        return ticketPoolRepo.findById(id).orElse(null);
- }
-    public List<TicketPool> findAllTicketPools() {
-        return ticketPoolRepo.findAll();
-    }
-
-    public void deleteTicketPool(TicketPool ticketPool) {
-        ticketPoolRepo.delete(ticketPool);
-    }
+//    // Thread-safe queue to store tickets
+//    private Queue<Ticket> ticketQueue = new ConcurrentLinkedQueue<>();
+//
+//    // Add a ticket to the queue
+//    public void addTicket(Ticket ticket) {
+//        ticketQueue.add(ticket);
+//        System.out.println("Ticket added: " + ticket.getTicketId());
+//    }
+//
+//    // Remove a ticket from the queue
+//    public Ticket removeTicket() {
+//        Ticket ticket = ticketQueue.poll();
+//        if (ticket != null) {
+//            System.out.println("Ticket removed: " + ticket.getTicketId());
+//        } else {
+//            System.out.println("No tickets available to remove.");
+//        }
+//        return ticket;
+//    }
+//
+//    // Get all available tickets
+//    public Queue<Ticket> getTickets() {
+//        return ticketQueue;
+//    }
 }
-
-
-

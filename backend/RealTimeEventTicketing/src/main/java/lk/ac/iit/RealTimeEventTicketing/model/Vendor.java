@@ -1,25 +1,39 @@
 package lk.ac.iit.RealTimeEventTicketing.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lk.ac.iit.RealTimeEventTicketing.Service.TicketPoolService;
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+
 public class Vendor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long vendorId;
-    private String vendorName;
-    private int ticketReleaseRate;
+    @Column(nullable = false)
+    private Long VendorId;
+    private String VendorName;
 
     public Vendor() {
     }
 
-    public Vendor(String vendorName, int ticketReleaseRate) {
-        this.vendorName = vendorName;
-        this.ticketReleaseRate = ticketReleaseRate;
-
+    public Long getVendorId() {
+        return VendorId;
     }
-}
 
+    public void setVendorId(Long vendorId) {
+        VendorId = vendorId;
+    }
+
+    public String getVendorName() {
+        return VendorName;
+    }
+
+    public void setVendorName(String vendorName) {
+        VendorName = vendorName;
+    }
+
+
+}

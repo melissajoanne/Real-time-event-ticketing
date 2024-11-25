@@ -1,9 +1,12 @@
 package lk.ac.iit.RealTimeEventTicketing.Controllers;
 
-import lk.ac.iit.RealTimeEventTicketing.Service.CustomerService;
-import lk.ac.iit.RealTimeEventTicketing.Service.VendorService;
-import lk.ac.iit.RealTimeEventTicketing.model.Customer;
+import lk.ac.iit.RealTimeEventTicketing.Service.*;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
+import lk.ac.iit.RealTimeEventTicketing.repo.EventRepo;
+import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
+import lk.ac.iit.RealTimeEventTicketing.repo.VendorRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +17,23 @@ import java.util.List;
 @RestController
 @RequestMapping("/vendor")
 public class VendorControllers {
+    private static final Logger logger = LoggerFactory.getLogger(VendorControllers.class);
+
     private final VendorService vendorService;
+    private final EventService eventService;
+    private final TicketService ticketService;
+    private final VendorRepo vendorRepo;
+    private final EventRepo eventRepo;
+    private final TicketRepo ticketRepo;
 
     @Autowired
-    public VendorControllers(VendorService vendorService) {
+    public VendorControllers(VendorService vendorService, EventService eventService, TicketService ticketService, VendorRepo vendorRepo, EventRepo eventRepo, TicketRepo ticketRepo) {
         this.vendorService = vendorService;
+        this.eventService = eventService;
+        this.ticketService = ticketService;
+        this.vendorRepo = vendorRepo;
+        this.eventRepo = eventRepo;
+        this.ticketRepo = ticketRepo;
     }
 
     @GetMapping("/all")
@@ -27,11 +42,11 @@ public class VendorControllers {
         return new ResponseEntity<>(vendors, HttpStatus.OK);
     }
 
-@GetMapping("/find/{vendorId}")
-public ResponseEntity<Vendor> findVendorById(@PathVariable("vendorId") Long vendorId) {
-Vendor vendor = vendorService.findVendorById(vendorId);
-return new ResponseEntity<>(vendor, HttpStatus.OK);
-}
+    @GetMapping("/find/{vendorId}")
+    public ResponseEntity<Vendor> findVendorById(@PathVariable("vendorId") Long vendorId) {
+        Vendor vendor = vendorService.findVendorById(vendorId);
+        return new ResponseEntity<>(vendor, HttpStatus.OK);
+    }
 
     @PostMapping("/add")
     public ResponseEntity<Vendor> addVendor(@RequestBody Vendor vendor) {
@@ -40,7 +55,7 @@ return new ResponseEntity<>(vendor, HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Vendor> updateCustomer(@RequestBody Vendor vendor) {
+    public ResponseEntity<Vendor> updateVendor(@RequestBody Vendor vendor) {
         Vendor updatedVendor = vendorService.updateVendor(vendor);
         return new ResponseEntity<>(updatedVendor, HttpStatus.OK);
     }
@@ -51,7 +66,12 @@ return new ResponseEntity<>(vendor, HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-}
+
+    }
+
+
+
+
 
 
 
