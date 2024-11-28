@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
@@ -36,10 +37,10 @@ public class TicketController {
         this.ticketRepo = ticketRepo;
     }
 
-    @GetMapping("/all")
-    public List<Ticket> getAllTickets() {
-        return ticketService.findAllTickets();
-    }
+//    @GetMapping("/all")
+//    public List<Ticket> getAllTickets() {
+//        return ticketService.findAllTickets();
+//    }
 
 //    @PostMapping("/vendor/{vendorId}/events/{eventId}/add")
 //    public ResponseEntity<String> addTicket(@PathVariable Long vendorId, @PathVariable Long eventId,
@@ -132,5 +133,12 @@ public ResponseEntity<String> updateTicket(@PathVariable Long ticketId, @Request
 public ResponseEntity<String> deleteTicket(@PathVariable Long ticketId) {
     return new ResponseEntity<>(ticketService.deleteTicket(ticketId), HttpStatus.OK);
 }
+
+@GetMapping("/all/pool")
+public ResponseEntity <List<Ticket>> getAllTicketsInPool() {
+    List <Ticket> tickets= ticketPoolService.getAllTickets();
+    return new ResponseEntity<>(tickets, HttpStatus.OK);
+}
+
 }
 

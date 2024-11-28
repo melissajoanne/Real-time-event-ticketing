@@ -4,34 +4,37 @@ package lk.ac.iit.RealTimeEventTicketing.Service;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 public class TicketPoolService {
 
-//    // Thread-safe queue to store tickets
-//    private Queue<Ticket> ticketQueue = new ConcurrentLinkedQueue<>();
-//
-//    // Add a ticket to the queue
-//    public void addTicket(Ticket ticket) {
-//        ticketQueue.add(ticket);
-//        System.out.println("Ticket added: " + ticket.getTicketId());
-//    }
-//
-//    // Remove a ticket from the queue
-//    public Ticket removeTicket() {
-//        Ticket ticket = ticketQueue.poll();
-//        if (ticket != null) {
-//            System.out.println("Ticket removed: " + ticket.getTicketId());
-//        } else {
-//            System.out.println("No tickets available to remove.");
-//        }
-//        return ticket;
-//    }
-//
-//    // Get all available tickets
-//    public Queue<Ticket> getTickets() {
-//        return ticketQueue;
-//    }
+    private final List<Ticket> pool = Collections.synchronizedList(new ArrayList<>());
+
+    public synchronized void addTicketToPool(Ticket ticket) {
+        if (pool.stream().noneMatch(existingTicket -> existingTicket.getTicketId().equals(ticket.getTicketId()))) {
+            pool.add(ticket);
+            System.out.println("Added ticket " + ticket.getTicketId() + " to the pool.");
+        } else {
+            throw new IllegalStateException("Duplicate ticket detected: " + ticket.getTicketId());
+        }
+        System.out.println(pool);
+    }
+
+        public synchronized List<Ticket> getAllTickets() {
+            return new ArrayList<>(pool);
+        }
+
+
+    public synchronized boolean removeTicket(Long ticketId) {
+        return pool.removeIf(ticket -> ticket.getTicketId().equals(ticketId));
+    }
+
+    public int getPoolSize() {
+        return pool.size();
+    }
 }

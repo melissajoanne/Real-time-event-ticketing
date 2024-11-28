@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +42,7 @@ public class TicketService {
 
     private final EventRepo eventRepo;
     private final Config config;
+    private final TicketPoolService ticketPoolService;
 
     private EventService eventService;
 
@@ -57,11 +59,12 @@ public class TicketService {
 
 
     @Autowired
-    public TicketService(TicketRepo ticketRepo, VendorRepo vendorRepo, EventRepo eventRepo, Config config) {
+    public TicketService(TicketRepo ticketRepo, VendorRepo vendorRepo, EventRepo eventRepo, Config config, TicketPoolService ticketPoolService) {
         this.ticketRepo = ticketRepo;
         this.vendorRepo = vendorRepo;
         this.eventRepo = eventRepo;
         this.config = config;
+        this.ticketPoolService = ticketPoolService;
     }
 
 
@@ -143,6 +146,7 @@ public class TicketService {
                             ticket.setType(releaseRequest.getTicketType());
                             ticket.setPrice(releaseRequest.getTicketPrice());
                             addTicket(ticket); // Save the ticket to the database
+                            ticketPoolService.addTicketToPool(ticket); // Add the ticket to the pool
 
                             // Log the ticket release
                             logger.info("Thread: {}, Vendor {} released ticket {} for event {}. Type: {}, Price: {}",
