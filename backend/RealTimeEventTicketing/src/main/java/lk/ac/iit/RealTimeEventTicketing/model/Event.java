@@ -12,15 +12,12 @@ public class Event {
     private Long eventId;
     private String eventName;
 
-    public Event() {
-    }
-
     public Long getEventId() {
         return eventId;
     }
 
     public void setEventId(Long eventId) {
-        eventId = eventId;
+        this.eventId = eventId;
     }
 
     public String getEventName() {
@@ -31,3 +28,4 @@ public class Event {
         this.eventName = eventName;
     }
 }
+//database

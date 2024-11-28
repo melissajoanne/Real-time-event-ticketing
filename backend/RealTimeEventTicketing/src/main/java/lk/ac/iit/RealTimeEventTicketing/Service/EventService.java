@@ -1,8 +1,10 @@
 package lk.ac.iit.RealTimeEventTicketing.Service;
 
 import lk.ac.iit.RealTimeEventTicketing.model.Event;
+import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
 import lk.ac.iit.RealTimeEventTicketing.repo.EventRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ public class EventService {
     public void deleteEvent(Long eventId) {
         eventRepo.deleteById(eventId);
     }
+
 }
 
 

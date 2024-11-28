@@ -1,39 +1,50 @@
 package lk.ac.iit.RealTimeEventTicketing.model;
 
 import jakarta.persistence.*;
-import lk.ac.iit.RealTimeEventTicketing.Service.TicketPoolService;
-import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-
 public class Vendor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private Long VendorId;
-    private String VendorName;
+    private Long vendorId;
 
-    public Vendor() {
+    private String vendorName;
+    private String email;
+    private int ticketReleaseInterval;
+
+    public int getTicketReleaseInterval() {
+        return ticketReleaseInterval;
+    }
+
+    public void setTicketReleaseInterval(int ticketReleaseInterval) {
+        this.ticketReleaseInterval = ticketReleaseInterval;
     }
 
     public Long getVendorId() {
-        return VendorId;
+        return vendorId;
     }
 
-    public void setVendorId(Long vendorId) {
-        VendorId = vendorId;
+    public void setVendorId(Long id) {
+        this.vendorId = vendorId;
     }
 
     public String getVendorName() {
-        return VendorName;
+        return vendorName;
     }
 
-    public void setVendorName(String vendorName) {
-        VendorName = vendorName;
+    public void setVendorName(String name) {
+        this.vendorName = vendorName;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 }

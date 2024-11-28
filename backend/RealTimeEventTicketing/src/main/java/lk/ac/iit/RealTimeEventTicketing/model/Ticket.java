@@ -2,8 +2,11 @@ package lk.ac.iit.RealTimeEventTicketing.model;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lk.ac.iit.RealTimeEventTicketing.TicketStatus;
 import lombok.Data;
 import org.antlr.v4.runtime.misc.NotNull;
+
+import java.util.List;
 
 @Entity
 public class Ticket {
@@ -14,8 +17,36 @@ public class Ticket {
     private String type;
     private double price;
     private String status;
+    private Long vendorId;
+    private Long eventId;
+
 
     public Ticket() {
+
+    }
+
+
+    public Ticket(Long ticketId, String type, double price, String status) {
+        this.ticketId = ticketId;
+        this.type = type;
+        this.price = price;
+        this.status = status;
+    }
+
+    public Long getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(Long vendorId) {
+        this.vendorId = vendorId;
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 
     public Long getTicketId() {
@@ -48,5 +79,17 @@ public class Ticket {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketId=" + ticketId +
+                ", type='" + type + '\'' +
+                ", price=" + price +
+                ", status='" + status + '\'' +
+                ", vendorId=" + vendorId +
+                ", eventId=" + eventId +
+                '}';
     }
 }

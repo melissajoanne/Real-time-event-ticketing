@@ -1,6 +1,9 @@
 package lk.ac.iit.RealTimeEventTicketing.Controllers;
 
+import lk.ac.iit.RealTimeEventTicketing.Config;
 import lk.ac.iit.RealTimeEventTicketing.Service.*;
+import lk.ac.iit.RealTimeEventTicketing.model.Event;
+import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
 import lk.ac.iit.RealTimeEventTicketing.repo.EventRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
@@ -13,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/vendor")
@@ -25,15 +31,18 @@ public class VendorControllers {
     private final VendorRepo vendorRepo;
     private final EventRepo eventRepo;
     private final TicketRepo ticketRepo;
+    private final Config config;
+    private Ticket ticket;
 
     @Autowired
-    public VendorControllers(VendorService vendorService, EventService eventService, TicketService ticketService, VendorRepo vendorRepo, EventRepo eventRepo, TicketRepo ticketRepo) {
+    public VendorControllers(VendorService vendorService, EventService eventService, TicketService ticketService, VendorRepo vendorRepo, EventRepo eventRepo, TicketRepo ticketRepo, Config config) {
         this.vendorService = vendorService;
         this.eventService = eventService;
         this.ticketService = ticketService;
         this.vendorRepo = vendorRepo;
         this.eventRepo = eventRepo;
         this.ticketRepo = ticketRepo;
+        this.config = config;
     }
 
     @GetMapping("/all")
@@ -67,7 +76,11 @@ public class VendorControllers {
     }
 
 
-    }
+}
+
+
+
+
 
 
 
