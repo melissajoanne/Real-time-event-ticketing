@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -74,26 +75,29 @@ public class TicketController {
 //            return new ResponseEntity<>("Error while releasing tickets: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 
-        @GetMapping("/find/{ticketId}")
-        public ResponseEntity<String> findTicketById(@PathVariable Long ticketId) {
-            return new ResponseEntity<>(ticketService.findById(ticketId), HttpStatus.OK);
-        }
-
-        @PutMapping("/update/{ticketId}")
-        public ResponseEntity<String> updateTicket(@PathVariable Long ticketId, @RequestBody Ticket ticket) {
-            return new ResponseEntity<>(ticketService.updateTicket(ticketId, ticket), HttpStatus.OK);
-        }
-
-        @DeleteMapping("/delete/{ticketId}")
-        public ResponseEntity<String> deleteTicket(@PathVariable Long ticketId) {
-            return new ResponseEntity<>(ticketService.deleteTicket(ticketId), HttpStatus.OK);
-        }
-    @GetMapping("/all/pool")
-    public ResponseEntity <List<Ticket>> getAllTicketsInPool() {
-        return new ResponseEntity<>(ticketPoolService.getAllTickets(), HttpStatus.OK);
+    @GetMapping("/find/{ticketId}")
+    public ResponseEntity<String> findTicketById(@PathVariable Long ticketId) {
+        return new ResponseEntity<>(ticketService.findById(ticketId), HttpStatus.OK);
     }
+
+    @PutMapping("/update/{ticketId}")
+    public ResponseEntity<String> updateTicket(@PathVariable Long ticketId, @RequestBody Ticket ticket) {
+        return new ResponseEntity<>(ticketService.updateTicket(ticketId, ticket), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{ticketId}")
+    public ResponseEntity<String> deleteTicket(@PathVariable Long ticketId) {
+        return new ResponseEntity<>(ticketService.deleteTicket(ticketId), HttpStatus.OK);
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<Map<String, Object>> getAvailableTickets() {
+        Map<String, Object> response = ticketPoolService.getAvailableTickets();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @PostMapping("/reserve/{ticketId}")
-    public ResponseEntity<String> reserveTicket(@PathVariable Long ticketId, @RequestBody TicketReserveRequest request)  {
+    public ResponseEntity<String> reserveTicket(@PathVariable Long ticketId, @RequestBody TicketReserveRequest request) {
         try {
             Ticket ticket = ticketPoolService.reserveTicket(ticketId, request.getCustomerId());
             if (ticket != null) {
@@ -118,9 +122,11 @@ public class TicketController {
     }
 
     // Get all tickets in the pool
-    @GetMapping("/all")
-    public ResponseEntity<List<Ticket>> getAllTickets() {
-        return ResponseEntity.ok(ticketPoolService.getAllTickets());
-    }
-}
+//    @GetMapping("/all")
+//    public ResponseEntity<List<Ticket>> getAllTickets() {
+//        return ResponseEntity.ok(ticketPoolService.getAllTickets());
+//    }
 
+    // You can call this method to notify customers when new tickets are added
+
+}

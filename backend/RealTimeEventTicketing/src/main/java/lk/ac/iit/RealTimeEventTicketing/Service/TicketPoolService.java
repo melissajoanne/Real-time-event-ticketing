@@ -183,11 +183,13 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketPoolService {
     private Config config;
     ConfigLoader configLoader;
+    private Set<Long> interestedCustomers = new HashSet<>();
 
     private static int MAX_POOL_SIZE;// Example maximum pool size
     private static final long RESERVATION_TIMEOUT_MS = 60000; // 1 minute timeout for reservation
@@ -214,18 +216,16 @@ public class TicketPoolService {
                 throw new IllegalStateException("Failed to add ticket to the pool", e);
             }
         }
-
+        boolean wasEmpty = ticketPool.isEmpty();
         ticketPool.addLast(ticket); // Use addLast for LinkedList
         reservationLocks.put(ticket.getTicketId(), new ReentrantLock());
         System.out.println("Added ticket " + ticket.getTicketId() + " to the pool.");
 
-        // Notify any waiting consumer that there is a new ticket available
-        notifyAll();
-    }
-
-    // Get all tickets in the pool
-    public synchronized List<Ticket> getAllTickets() {
-        return new LinkedList<>(ticketPool); // Create a new LinkedList from the pool
+        // Notify all waiting customers that there is a new ticket available
+        if (wasEmpty) {
+            System.out.println("Notifying all waiting customers that a new ticket is available...");
+            notifyAll();
+        }
     }
 
     // Reserve a ticket for a customer (Consumer-like operation)
@@ -274,7 +274,6 @@ public class TicketPoolService {
             lock.unlock();
         }
     }
-
     // Release reservation if not purchased within timeout
     private void releaseReservationIfNotPurchased(Long ticketId) {
         try {
@@ -341,6 +340,24 @@ public class TicketPoolService {
 
         // Notify any waiting producer that a ticket has been sold and space is available in the pool
         notifyAll();
+    }
+    // Get all tickets in the pool
+    public Map<String, Object> getAvailableTickets() {
+        List<Ticket> availableTickets = ticketPool.stream()
+                .filter(ticket -> ticket.getStatus().equals("Available"))
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        if (availableTickets.isEmpty()) {
+            response.put("message", "No tickets are currently available.");
+            response.put("tickets", Collections.emptyList());
+        } else {
+            response.put("message", "Available tickets found.");
+            response.put("tickets", availableTickets);
+        }
+
+
+        return response;
     }
 }
 
