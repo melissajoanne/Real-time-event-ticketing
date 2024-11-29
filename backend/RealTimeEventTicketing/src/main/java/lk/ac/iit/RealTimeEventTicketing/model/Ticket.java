@@ -1,12 +1,6 @@
 package lk.ac.iit.RealTimeEventTicketing.model;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lk.ac.iit.RealTimeEventTicketing.TicketStatus;
-import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
-
-import java.util.List;
 
 @Entity
 public class Ticket {
@@ -19,7 +13,15 @@ public class Ticket {
     private String status;
     private Long vendorId;
     private Long eventId;
+    private Long customerId;
 
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
 
     public Ticket() {
 

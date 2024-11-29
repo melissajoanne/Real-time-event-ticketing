@@ -1,34 +1,24 @@
 package lk.ac.iit.RealTimeEventTicketing.Service;
 
 import lk.ac.iit.RealTimeEventTicketing.Config;
-import lk.ac.iit.RealTimeEventTicketing.TicketStatus;
+import lk.ac.iit.RealTimeEventTicketing.ConfigLoader;
 import lk.ac.iit.RealTimeEventTicketing.dto.TicketReleaseRequest;
-import lk.ac.iit.RealTimeEventTicketing.model.Event;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
 import lk.ac.iit.RealTimeEventTicketing.repo.EventRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.VendorRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -43,6 +33,7 @@ public class TicketService {
     private final EventRepo eventRepo;
     private final Config config;
     private final TicketPoolService ticketPoolService;
+    private final ConfigLoader configLoader;
 
     private EventService eventService;
 
@@ -59,12 +50,13 @@ public class TicketService {
 
 
     @Autowired
-    public TicketService(TicketRepo ticketRepo, VendorRepo vendorRepo, EventRepo eventRepo, Config config, TicketPoolService ticketPoolService) {
+    public TicketService(TicketRepo ticketRepo, VendorRepo vendorRepo, EventRepo eventRepo, Config config, TicketPoolService ticketPoolService, ConfigLoader configLoader) {
         this.ticketRepo = ticketRepo;
         this.vendorRepo = vendorRepo;
         this.eventRepo = eventRepo;
         this.config = config;
         this.ticketPoolService = ticketPoolService;
+        this.configLoader = configLoader;
     }
 
 
@@ -142,7 +134,7 @@ public class TicketService {
                             Ticket ticket = new Ticket();
                             ticket.setVendorId(vendorId);
                             ticket.setEventId(eventId);
-                            ticket.setStatus("available");
+                            ticket.setStatus("Available");
                             ticket.setType(releaseRequest.getTicketType());
                             ticket.setPrice(releaseRequest.getTicketPrice());
                             addTicket(ticket); // Save the ticket to the database
@@ -160,7 +152,7 @@ public class TicketService {
 
                         // Ensure the vendor waits the proper interval between ticket releases
                         long currentTime = System.currentTimeMillis();
-                        long delayInMillis = releaseRequest.getTicketReleaseInterval() * 1000L; // Convert to milliseconds
+                        long delayInMillis = configLoader.getAppConfig().getTicketReleaseRate() * 1000L; // Convert to milliseconds
                         long timeElapsed = currentTime - lastReleaseTime;
 
                         // If not enough time has passed, sleep for the remaining time
@@ -185,9 +177,11 @@ public class TicketService {
         }, executorService);
     }
 
-
-
 }
+
+
+
+
 
 
 

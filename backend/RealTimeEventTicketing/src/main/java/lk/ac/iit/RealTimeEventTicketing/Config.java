@@ -62,10 +62,10 @@ public class Config implements Serializable {
                 '}';
     }
     @Bean(name = "taskExecutor")
-    public Executor taskExecutor() {
+    public Executor taskExecutor(ConfigLoader configLoader) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(2);
+        executor.setMaxPoolSize(configLoader.getAppConfig().getTotalTickets());
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("vendorThread-");
         executor.initialize();

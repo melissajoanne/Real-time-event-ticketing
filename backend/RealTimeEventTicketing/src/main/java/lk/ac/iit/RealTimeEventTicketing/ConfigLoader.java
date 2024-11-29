@@ -16,23 +16,23 @@ public class ConfigLoader {
 
     public ConfigLoader() throws IOException {
         // Path to your JSON file
-        String filePath = "ticketSystemConfig.json";
+        String filePath = "/Users/melzjoanne/Documents/GitHub/Real-time-ticket/CLI/CLI/ticketSystemConfig.json";
 
         // Use Jackson to read the JSON file into the AppConfig object
         ObjectMapper objectMapper = new ObjectMapper();
         this.appConfig = objectMapper.readValue(new File(filePath), Config.class);
     }
 
-    @Bean(name="treadPool")
-    public Executor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(appConfig.getTotalTickets());
-        executor.setQueueCapacity(appConfig.getMaxTicketCapacity());
-        executor.setThreadNamePrefix("userThread-");
-        executor.initialize();
-        return executor;
-    }
+//    @Bean(name="treadPool")
+//    public Executor taskExecutor() {
+//        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+//        executor.setCorePoolSize(2);
+//        executor.setMaxPoolSize(appConfig.getTotalTickets());
+//        executor.setQueueCapacity(appConfig.getMaxTicketCapacity());
+//        executor.setThreadNamePrefix("userThread-");
+//        executor.initialize();
+//        return executor;
+//    }
 
     public Config getAppConfig() {
         return appConfig;
