@@ -40,9 +40,9 @@ public class TicketController {
         this.ticketPoolService = ticketPoolService;
         this.ticketRepo = ticketRepo;
     }
-    @PostMapping("/vendor/{vendorId}/events/{eventId}/add")
-    public ResponseEntity<String> addTicket(@PathVariable Long vendorId, @PathVariable Long eventId,
-                                            @RequestBody TicketReleaseRequest releaseRequest) {
+
+    @PostMapping("/vendor/{vendorId}/add")
+    public ResponseEntity<String> addTicket(@PathVariable Long vendorId, @RequestBody TicketReleaseRequest releaseRequest) {
         try {
             // Validate the ticketsPerRelease parameter
             if (releaseRequest.getTicketsPerRelease() <= 0) {
@@ -50,13 +50,30 @@ public class TicketController {
             }
 
             // Submit the task to executorService to handle it in a separate thread
-            executorService.submit(() -> ticketService.releaseTickets(vendorId, eventId, releaseRequest));
+            executorService.submit(() -> ticketService.releaseTickets(vendorId, releaseRequest));
 
             return new ResponseEntity<>("Ticket release process started.", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error while releasing tickets: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+//    @PostMapping("/vendor/{vendorId}/events/{eventId}/add")
+//    public ResponseEntity<String> addTicket(@PathVariable Long vendorId, @PathVariable Long eventId,
+//                                            @RequestBody TicketReleaseRequest releaseRequest) {
+//        try {
+//            // Validate the ticketsPerRelease parameter
+//            if (releaseRequest.getTicketsPerRelease() <= 0) {
+//                return new ResponseEntity<>("Invalid number of tickets per release.", HttpStatus.BAD_REQUEST);
+//            }
+//
+//            // Submit the task to executorService to handle it in a separate thread
+//            executorService.submit(() -> ticketService.releaseTickets(vendorId, eventId, releaseRequest));
+//
+//            return new ResponseEntity<>("Ticket release process started.", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("Error while releasing tickets: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+
         @GetMapping("/find/{ticketId}")
         public ResponseEntity<String> findTicketById(@PathVariable Long ticketId) {
             return new ResponseEntity<>(ticketService.findById(ticketId), HttpStatus.OK);
@@ -78,7 +95,7 @@ public class TicketController {
     @PostMapping("/reserve/{ticketId}")
     public ResponseEntity<String> reserveTicket(@PathVariable Long ticketId, @RequestBody TicketReserveRequest request)  {
         try {
-            Ticket ticket = ticketPoolService.selectTicketToBuy(ticketId, request.getCustomerId());
+            Ticket ticket = ticketPoolService.reserveTicket(ticketId, request.getCustomerId());
             if (ticket != null) {
                 return ResponseEntity.ok("Ticket " + ticketId + " reserved successfully.");
             } else {

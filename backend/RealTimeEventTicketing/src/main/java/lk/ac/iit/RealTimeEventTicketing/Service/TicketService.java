@@ -5,7 +5,6 @@ import lk.ac.iit.RealTimeEventTicketing.ConfigLoader;
 import lk.ac.iit.RealTimeEventTicketing.dto.TicketReleaseRequest;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
-import lk.ac.iit.RealTimeEventTicketing.repo.EventRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.VendorRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +29,9 @@ public class TicketService {
 
     private final VendorRepo vendorRepo;
 
-    private final EventRepo eventRepo;
     private final Config config;
     private final TicketPoolService ticketPoolService;
     private final ConfigLoader configLoader;
-
-    private EventService eventService;
 
     private Vendor vendor;
     private final AtomicInteger vendorCountForEvent = new AtomicInteger(0);
@@ -50,10 +46,9 @@ public class TicketService {
 
 
     @Autowired
-    public TicketService(TicketRepo ticketRepo, VendorRepo vendorRepo, EventRepo eventRepo, Config config, TicketPoolService ticketPoolService, ConfigLoader configLoader) {
+    public TicketService(TicketRepo ticketRepo, VendorRepo vendorRepo, Config config, TicketPoolService ticketPoolService, ConfigLoader configLoader) {
         this.ticketRepo = ticketRepo;
         this.vendorRepo = vendorRepo;
-        this.eventRepo = eventRepo;
         this.config = config;
         this.ticketPoolService = ticketPoolService;
         this.configLoader = configLoader;
@@ -114,70 +109,125 @@ public class TicketService {
         vendorCountForEvent.decrementAndGet();
     }
 
-    @Async("taskExecutor")
-    public CompletableFuture<Void> releaseTickets(Long vendorId, Long eventId, TicketReleaseRequest releaseRequest) {
-        return CompletableFuture.runAsync(() -> {
-            // Lock to ensure only one vendor releases tickets for an event at a time
-            ReentrantLock eventLock = eventLocks.computeIfAbsent(eventId, k -> new ReentrantLock());
+//    @Async("taskExecutor")
+//    public CompletableFuture<Void> releaseTickets(Long vendorId, Long eventId, TicketReleaseRequest releaseRequest) {
+//        return CompletableFuture.runAsync(() -> {
+//            // Lock to ensure only one vendor releases tickets for an event at a time
+//            ReentrantLock eventLock = eventLocks.computeIfAbsent(eventId, k -> new ReentrantLock());
+//
+//            long lastReleaseTime = System.currentTimeMillis(); // Track the last release time for the vendor
+//
+//            try {
+//                incrementVendorCountForEvent(eventId); // Increase the counter for vendors releasing tickets
+//
+//                for (int i = 0; i < releaseRequest.getTicketsPerRelease(); i++) {
+//                    // Ensure that the ticket release happens at the correct interval
+//                    synchronized (this) {
+//                        eventLock.lock(); // Lock event to ensure one vendor works at a time
+//                        try {
+//                            // Create a ticket
+//                            Ticket ticket = new Ticket();
+//                            ticket.setVendorId(vendorId);
+//                            ticket.setEventId(eventId);
+//                            ticket.setStatus("Available");
+//                            ticket.setType(releaseRequest.getTicketType());
+//                            ticket.setPrice(releaseRequest.getTicketPrice());
+//                            addTicket(ticket); // Save the ticket to the database
+//                            ticketPoolService.addTicketToPool(ticket); // Add the ticket to the pool
+//
+//                            // Log the ticket release
+//                            logger.info("Thread: {}, Vendor {} released ticket {} for event {}. Type: {}, Price: {}",
+//                                    Thread.currentThread().getName(), vendorId, ticket.getTicketId(), eventId, ticket.getType(), ticket.getPrice());
+//
+//                            // Update last release time after each ticket is added
+//                            lastReleaseTime = System.currentTimeMillis();
+//                        } finally {
+//                            eventLock.unlock(); // Unlock the event after releasing the ticket
+//                        }
+//
+//                        // Ensure the vendor waits the proper interval between ticket releases
+//                        long currentTime = System.currentTimeMillis();
+//                        long delayInMillis = configLoader.getAppConfig().getTicketReleaseRate() * 1000L; // Convert to milliseconds
+//                        long timeElapsed = currentTime - lastReleaseTime;
+//
+//                        // If not enough time has passed, sleep for the remaining time
+//                        if (timeElapsed < delayInMillis) {
+//                            long sleepTime = delayInMillis - timeElapsed;
+//                            try {
+//                                Thread.sleep(sleepTime); // Wait for the remaining time
+//                            } catch (InterruptedException e) {
+//                                Thread.currentThread().interrupt();
+//                                logger.error("Ticket release interrupted for vendor {} and event {}", vendorId, eventId, e);
+//                                throw new RuntimeException("Ticket release was interrupted.", e);
+//                            }
+//                        }
+//                    }
+//                }
+//            } catch (Exception e) {
+//                logger.error("Error while releasing tickets for vendor {} and event {}: {}", vendorId, eventId, e.getMessage(), e);
+//                throw new RuntimeException("Error while releasing tickets: " + e.getMessage(), e);
+//            } finally {
+//                decrementVendorCountForEvent(eventId); // Decrease vendor count when done
+//            }
+//        }, executorService);
 
+
+    @Async("taskExecutor")
+    public CompletableFuture<Void> releaseTickets(Long vendorId, TicketReleaseRequest releaseRequest) {
+        return CompletableFuture.runAsync(() -> {
             long lastReleaseTime = System.currentTimeMillis(); // Track the last release time for the vendor
 
             try {
-                incrementVendorCountForEvent(eventId); // Increase the counter for vendors releasing tickets
-
+                // Loop to release the specified number of tickets
                 for (int i = 0; i < releaseRequest.getTicketsPerRelease(); i++) {
-                    // Ensure that the ticket release happens at the correct interval
-                    synchronized (this) {
-                        eventLock.lock(); // Lock event to ensure one vendor works at a time
-                        try {
-                            // Create a ticket
-                            Ticket ticket = new Ticket();
-                            ticket.setVendorId(vendorId);
-                            ticket.setEventId(eventId);
-                            ticket.setStatus("Available");
-                            ticket.setType(releaseRequest.getTicketType());
-                            ticket.setPrice(releaseRequest.getTicketPrice());
-                            addTicket(ticket); // Save the ticket to the database
-                            ticketPoolService.addTicketToPool(ticket); // Add the ticket to the pool
+                    // Create a new ticket
+                    Ticket ticket = new Ticket();
+                    ticket.setVendorId(vendorId);
+                    ticket.setStatus("Available");
+                    ticket.setType(releaseRequest.getTicketType());
+                    ticket.setPrice(releaseRequest.getTicketPrice());
 
-                            // Log the ticket release
-                            logger.info("Thread: {}, Vendor {} released ticket {} for event {}. Type: {}, Price: {}",
-                                    Thread.currentThread().getName(), vendorId, ticket.getTicketId(), eventId, ticket.getType(), ticket.getPrice());
+                    // Save the ticket to the database and add it to the ticket pool
+                    addTicket(ticket); // Save the ticket to the database
+                    ticketPoolService.addTicketToPool(ticket); // Add the ticket to the pool
 
-                            // Update last release time after each ticket is added
-                            lastReleaseTime = System.currentTimeMillis();
-                        } finally {
-                            eventLock.unlock(); // Unlock the event after releasing the ticket
-                        }
+                    // Log the ticket release
+                    logger.info("Thread: {}, Vendor {} released ticket {}. Type: {}, Price: {}",
+                            Thread.currentThread().getName(), vendorId, ticket.getTicketId(), ticket.getType(), ticket.getPrice());
 
-                        // Ensure the vendor waits the proper interval between ticket releases
-                        long currentTime = System.currentTimeMillis();
-                        long delayInMillis = configLoader.getAppConfig().getTicketReleaseRate() * 1000L; // Convert to milliseconds
-                        long timeElapsed = currentTime - lastReleaseTime;
+                    // Update last release time after each ticket is added
+                    lastReleaseTime = System.currentTimeMillis();
 
-                        // If not enough time has passed, sleep for the remaining time
-                        if (timeElapsed < delayInMillis) {
-                            long sleepTime = delayInMillis - timeElapsed;
-                            try {
-                                Thread.sleep(sleepTime); // Wait for the remaining time
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                logger.error("Ticket release interrupted for vendor {} and event {}", vendorId, eventId, e);
-                                throw new RuntimeException("Ticket release was interrupted.", e);
-                            }
-                        }
-                    }
+                    // Ensure the vendor waits the correct interval between ticket releases
+                    waitForNextRelease(lastReleaseTime, vendorId);
                 }
             } catch (Exception e) {
-                logger.error("Error while releasing tickets for vendor {} and event {}: {}", vendorId, eventId, e.getMessage(), e);
+                logger.error("Error while releasing tickets for vendor {}: {}", vendorId, e.getMessage(), e);
                 throw new RuntimeException("Error while releasing tickets: " + e.getMessage(), e);
-            } finally {
-                decrementVendorCountForEvent(eventId); // Decrease vendor count when done
             }
         }, executorService);
     }
 
+    private void waitForNextRelease(long lastReleaseTime, Long vendorId) {
+        // Ensure the vendor waits the correct interval between releases
+        long currentTime = System.currentTimeMillis();
+        long delayInMillis = configLoader.getAppConfig().getTicketReleaseRate() * 1000L; // Convert to milliseconds
+        long timeElapsed = currentTime - lastReleaseTime;
+
+        // If not enough time has passed, sleep for the remaining time
+        if (timeElapsed < delayInMillis) {
+            long sleepTime = delayInMillis - timeElapsed;
+            try {
+                Thread.sleep(sleepTime); // Wait for the remaining time
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.error("Ticket release interrupted for vendor {}", vendorId, e);
+                throw new RuntimeException("Ticket release was interrupted.", e);
+            }
+        }
+    }
 }
+
 
 
 

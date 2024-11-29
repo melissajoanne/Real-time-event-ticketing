@@ -1,49 +1,78 @@
 package lk.ac.iit.RealTimeEventTicketing.Service;
 
-
 import jakarta.transaction.Transactional;
+import lk.ac.iit.RealTimeEventTicketing.Config;
+import lk.ac.iit.RealTimeEventTicketing.ConfigLoader;
+import lk.ac.iit.RealTimeEventTicketing.TicketPool;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-@Service
-public class TicketPoolService {
-    private final TicketRepo ticketRepo;
-
-    private final List<Ticket> ticketPool = Collections.synchronizedList(new ArrayList<>());
-
-    private static final long RESERVATION_TIMEOUT = 60 * 1000; // 1 minute in milliseconds
-    private static final int MAX_POOL_SIZE = 1000; // Hardcoded pool size
-    private final List<Ticket> pool = new ArrayList<>(MAX_POOL_SIZE);
-    private final Map<Long, ReentrantLock> reservationLocks = new HashMap<>();
-    private static final int MAX_REQUESTS_PER_MINUTE = 3; // Max requests per minute
-    private static final long RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute window
-    private final Map<Long, Queue<Long>> customerRequestTimestamps = new HashMap<>();
-
-
-    public TicketPoolService(TicketRepo ticketRepo) {
-        this.ticketRepo = ticketRepo;
-    }
-
-    // Add tickets to the pool
-    public synchronized void addTicketToPool(Ticket ticket) {
-        if (pool.size() < MAX_POOL_SIZE) {
-            pool.add(ticket);
-            reservationLocks.put(ticket.getTicketId(), new ReentrantLock());
-            System.out.println("Added ticket " + ticket.getTicketId() + " to the pool.");
-        } else {
-            throw new IllegalStateException("Ticket pool is full");
-        }
-    }
-
-//    // Reserve a ticket for a customer
-//    public synchronized Ticket reserveTicket(Long ticketId) {
-//        Optional<Ticket> ticketOptional = pool.stream()
+//@Service
+//public class TicketPoolService {
+//
+//    private final TicketRepo ticketRepo;
+//
+//    private final List<Ticket> ticketPool = new ArrayList<>(); // List to simulate the pool (for example)
+//    private static final int MAX_POOL_SIZE = 1000; // Max size 1000
+//
+//    private static final long RESERVATION_TIMEOUT_MS = 60 * 1000; // 1-minute reservation timeout
+//    private static final int MAX_REQUESTS_PER_MINUTE = 3; // Max requests per minute for rate-limiting
+//    private static final long RATE_LIMIT_WINDOW_MS = 60 * 1000; // Rate-limit window duration
+//
+//    private final Map<Long, ReentrantLock> reservationLocks = new HashMap<>();
+//    private final Map<Long, Queue<Long>> customerRequestTimestamps = new HashMap<>();
+//
+//    public TicketPoolService(TicketRepo ticketRepo) {
+//        this.ticketRepo = ticketRepo;
+//    }
+//
+//    // Add tickets to the pool (Producer)
+//    public synchronized void addTicketToPool(Ticket ticket) {
+//        // Wait if the pool is full
+//        while (ticketPool.size() >= MAX_POOL_SIZE) {
+//            try {
+//                System.out.println("Ticket pool is full, waiting to add more tickets...");
+//                wait(); // Wait until there's space in the pool
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//                throw new IllegalStateException("Failed to add ticket to the pool", e);
+//            }
+//        }
+//
+//        ticketPool.add(ticket);
+//        reservationLocks.put(ticket.getTicketId(), new ReentrantLock());
+//        System.out.println("Added ticket " + ticket.getTicketId() + " to the pool.");
+//
+//        // Notify any waiting consumer that there is a new ticket available
+//        notifyAll();
+//    }
+//
+//    // Get all tickets in the pool
+//    public synchronized List<Ticket> getAllTickets() {
+//        return new ArrayList<>(ticketPool);
+//    }
+//
+//    // Reserve a ticket for a customer (Consumer-like operation)
+//    public synchronized Ticket reserveTicket(Long ticketId, Long customerId) {
+//        // Wait if the pool is empty
+//        while (ticketPool.isEmpty()) {
+//            try {
+//                System.out.println("Ticket pool is empty, waiting for tickets...");
+//                wait(); // Wait until there's a ticket in the pool
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//                throw new IllegalStateException("Failed to reserve ticket", e);
+//            }
+//        }
+//
+//        // Look for the ticket in the pool with status "Available"
+//        Optional<Ticket> ticketOptional = ticketPool.stream()
 //                .filter(ticket -> ticket.getTicketId().equals(ticketId) && ticket.getStatus().equals("Available"))
 //                .findFirst();
 //
@@ -54,103 +83,166 @@ public class TicketPoolService {
 //        Ticket ticket = ticketOptional.get();
 //        ReentrantLock lock = reservationLocks.get(ticketId);
 //
-//        // Try to acquire lock to prevent other customers from reserving the same ticket
-//        boolean acquiredLock = lock.tryLock();
-//        if (acquiredLock) {
-//            try {
-//                // Set a timeout for the reservation
-//                Thread.sleep(RESERVATION_TIMEOUT);
-//                return ticket;
-//            } catch (InterruptedException e) {
-//                Thread.currentThread().interrupt();
-//            } finally {
-//                lock.unlock();
+//        // Lock the ticket to ensure it's not modified by another thread during reservation
+//        lock.lock();
+//        try {
+//            // Ensure the ticket is not already reserved
+//            if (!"Available".equals(ticket.getStatus())) {
+//                throw new IllegalStateException("Ticket " + ticketId + " is already reserved or sold.");
 //            }
+//
+//            // Mark the ticket as reserved for the customer
+//            ticket.setStatus("Reserved");
+//            ticket.setCustomerId(customerId);
+//            System.out.println("Ticket " + ticketId + " reserved for customer " + customerId);
+//
+//            // Start a separate thread to release the reservation if not finalized within the timeout
+//            new Thread(() -> releaseReservationIfNotPurchased(ticketId)).start();
+//            return ticket;
+//
+//        } finally {
+//            lock.unlock();
 //        }
-////         else {
-////            throw new IllegalStateException("Ticket " + ticketId + " is already reserved by another customer.");
-////        }
-//        return null;
+//    }
 
-// Reserve a ticket for a customer
+//    // Release reservation if not purchased within timeout
+//    private void releaseReservationIfNotPurchased(Long ticketId) {
+//        try {
+//            // Wait for 1 minute to see if the purchase is finalized
+//            TimeUnit.MILLISECONDS.sleep(RESERVATION_TIMEOUT_MS); // 1 minute timeout
 //
-//public Ticket reserveTicket(Long ticketId) {
-//    // Lock the ticket to prevent other threads from modifying it at the same time
-//    ReentrantLock lock = reservationLocks.get(ticketId);
+//            synchronized (this) {
+//                Optional<Ticket> ticketOptional = ticketPool.stream()
+//                        .filter(ticket -> ticket.getTicketId().equals(ticketId) && "Reserved".equals(ticket.getStatus()))
+//                        .findFirst();
 //
-//    // Acquire the lock to ensure thread safety when modifying ticket status
-//    lock.lock();
-//    try {
-//        // Look for the ticket in the pool with status "available"
-//        Optional<Ticket> ticketOptional = pool.stream()
-//                .filter(ticket -> ticket.getTicketId().equals(ticketId) && ticket.getStatus().equals("Available"))
+//                if (ticketOptional.isPresent()) {
+//                    Ticket ticket = ticketOptional.get();
+//                    // If the ticket is still reserved, release it and set it back to available
+//                    ticket.setStatus("Available");
+//                    ticket.setCustomerId(null);  // Clear the customerId
+//                    System.out.println("Ticket " + ticketId + " reservation expired and is now available.");
+//
+//                    // Notify any waiting producer (if the pool is not full) that a ticket has become available
+//                    notifyAll();
+//                }
+//            }
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//            System.err.println("Reservation release interrupted for ticket " + ticketId);
+//        }
+//    }
+//
+//    // Finalize sale for a ticket
+//    public synchronized void finalizeSale(Long ticketId, Long customerId) {
+//        Optional<Ticket> ticketOptional = ticketPool.stream()
+//                .filter(ticket -> ticket.getTicketId().equals(ticketId))
 //                .findFirst();
 //
-//        // If the ticket is not found or its status isn't "available", it's no longer available
 //        if (ticketOptional.isEmpty()) {
-//            throw new IllegalStateException("Ticket " + ticketId + " is not available.");
+//            throw new IllegalStateException("Ticket " + ticketId + " not found in the pool.");
 //        }
 //
 //        Ticket ticket = ticketOptional.get();
 //
-//        // Lock the ticket to safely update its status (synchronized access)
+//        // Ensure the ticket is reserved and not already sold
+//        if (!"Reserved".equals(ticket.getStatus())) {
+//            throw new IllegalStateException("Ticket " + ticketId + " is not reserved.");
+//        }
+//
+//        // Ensure that the ticket is reserved by the correct customer
+//        if (!ticket.getCustomerId().equals(customerId)) {
+//            throw new IllegalStateException("Ticket " + ticketId + " was reserved by another customer.");
+//        }
+//
 //        synchronized (ticket) {
-//            // Mark the ticket as "reserved" temporarily (before finalizing purchase)
-//            if ("Available".equals(ticket.getStatus())) {
-//                ticket.setStatus("reserved");  // Mark as reserved
-//            } else {
-//                // If the ticket is not available, notify and return null
-//                throw new IllegalStateException("Ticket " + ticketId + " is no longer available for reservation.");
-//            }
+//            // Mark the ticket as sold
+//            ticket.setStatus("Sold");
+//
+//            // Remove the ticket from the pool as it is sold
+//            ticketPool.remove(ticket);
+//            reservationLocks.remove(ticketId);
+//
+//            // Update the ticket in the database
+//            ticketRepo.save(ticket);
+//
+//            System.out.println("Ticket " + ticketId + " has been sold and removed from the pool.");
 //        }
 //
-//        // Simulate a reservation timeout (1 minute as specified)
-//        long startTime = System.currentTimeMillis();
-//        while (System.currentTimeMillis() - startTime < RESERVATION_TIMEOUT) {
-//            // Polling for the purchase confirmation or timeout
-//            if ("sold".equals(ticket.getStatus())) {
-//                // If it's sold during the reservation, exit early
-//                throw new IllegalStateException("Ticket " + ticketId + " has been sold.");
-//            }
-//        }
-//
-//        // After timeout, if still reserved and not sold, allow the reservation
-//        if ("reserved".equals(ticket.getStatus())) {
-//            return ticket;
-//        }
-//
-//        return null;  // If ticket is sold during the reservation, return null
-//
-//    } finally {
-//        lock.unlock();  // Always release the lock to avoid deadlocks
+//        // Notify any waiting producer that a ticket has been sold and space is available in the pool
+//        notifyAll();
 //    }
 //}
-// Reserve a ticket for a customer
 
-    // Method to check if the customer exceeds their retrieval rate
-    private boolean exceedsRateLimit(Long customerId) {
-        Queue<Long> timestamps = customerRequestTimestamps.computeIfAbsent(customerId, k -> new LinkedList<>());
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-        long currentTime = System.currentTimeMillis();
-        timestamps.offer(currentTime);
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
-        // Remove timestamps that are older than the rate limit window
-        while (!timestamps.isEmpty() && timestamps.peek() < currentTime - RATE_LIMIT_WINDOW_MS) {
-            timestamps.poll();
-        }
+@Service
+public class TicketPoolService {
+    private Config config;
+    ConfigLoader configLoader;
 
-        // Check if the customer has exceeded the max allowed requests in the time window
-        return timestamps.size() > MAX_REQUESTS_PER_MINUTE;
+    private static int MAX_POOL_SIZE;// Example maximum pool size
+    private static final long RESERVATION_TIMEOUT_MS = 60000; // 1 minute timeout for reservation
+
+    private final TicketRepo ticketRepo;
+    private final LinkedList<Ticket> ticketPool = new LinkedList<>(); // Change to LinkedList
+    private final ConcurrentHashMap<Long, ReentrantLock> reservationLocks = new ConcurrentHashMap<>();
+
+    @Autowired
+    public TicketPoolService(TicketRepo ticketRepo, ConfigLoader configLoader) {
+        this.ticketRepo = ticketRepo;
+        this.MAX_POOL_SIZE = configLoader.getAppConfig().getMaxTicketCapacity();
     }
 
-    // Method to select a ticket to buy (Reservation phase)
-    public Ticket selectTicketToBuy(Long ticketId, Long customerId) {
-        // Check if the customer exceeds the retrieval rate
-        if (exceedsRateLimit(customerId)) {
-            throw new IllegalStateException("Customer " + customerId + " has exceeded the request rate limit.");
+    // Add tickets to the pool (Producer)
+    public synchronized void addTicketToPool(Ticket ticket) {
+        // Wait if the pool is full
+        while (ticketPool.size() >= MAX_POOL_SIZE) {
+            try {
+                System.out.println("Ticket pool is full, waiting to add more tickets...");
+                wait(); // Wait until there's space in the pool
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Failed to add ticket to the pool", e);
+            }
         }
 
-        Optional<Ticket> ticketOptional = pool.stream()
+        ticketPool.addLast(ticket); // Use addLast for LinkedList
+        reservationLocks.put(ticket.getTicketId(), new ReentrantLock());
+        System.out.println("Added ticket " + ticket.getTicketId() + " to the pool.");
+
+        // Notify any waiting consumer that there is a new ticket available
+        notifyAll();
+    }
+
+    // Get all tickets in the pool
+    public synchronized List<Ticket> getAllTickets() {
+        return new LinkedList<>(ticketPool); // Create a new LinkedList from the pool
+    }
+
+    // Reserve a ticket for a customer (Consumer-like operation)
+    public synchronized Ticket reserveTicket(Long ticketId, Long customerId) {
+        // Wait if the pool is empty
+        while (ticketPool.isEmpty()) {
+            try {
+                System.out.println("Ticket pool is empty, waiting for tickets...");
+                wait(); // Wait until there's a ticket in the pool
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Failed to reserve ticket", e);
+            }
+        }
+
+        // Look for the ticket in the pool with status "Available"
+        Optional<Ticket> ticketOptional = ticketPool.stream()
                 .filter(ticket -> ticket.getTicketId().equals(ticketId) && ticket.getStatus().equals("Available"))
                 .findFirst();
 
@@ -159,46 +251,51 @@ public class TicketPoolService {
         }
 
         Ticket ticket = ticketOptional.get();
-        ReentrantLock lock = reservationLocks.computeIfAbsent(ticketId, id -> new ReentrantLock());
+        ReentrantLock lock = reservationLocks.get(ticketId);
 
-        // Try to acquire lock to prevent other customers from reserving the same ticket
-        boolean acquiredLock = lock.tryLock();
-        if (acquiredLock) {
-            try {
-                // Mark ticket as reserved temporarily for the customer
-                if (!"Available".equals(ticket.getStatus())) {
-                    throw new IllegalStateException("Ticket " + ticketId + " is already reserved or sold.");
-                }
-                ticket.setStatus("reserved");
-
-                // Simulate reservation expiration after timeout (10 minutes)
-                new Thread(() -> releaseReservationIfNotPurchased(ticketId)).start();
-
-                return ticket;
-            } catch (Exception e) {
-                throw new RuntimeException("Error reserving ticket " + ticketId, e);
-            } finally {
-                lock.unlock(); // Always unlock the reservation lock after the operation
+        // Lock the ticket to ensure it's not modified by another thread during reservation
+        lock.lock();
+        try {
+            // Ensure the ticket is not already reserved
+            if (!"Available".equals(ticket.getStatus())) {
+                throw new IllegalStateException("Ticket " + ticketId + " is already reserved or sold.");
             }
-        } else {
-            throw new IllegalStateException("Ticket " + ticketId + " is already reserved by another customer.");
+
+            // Mark the ticket as reserved for the customer
+            ticket.setStatus("Reserved");
+            ticket.setCustomerId(customerId);
+            System.out.println("Ticket " + ticketId + " reserved for customer " + customerId);
+
+            // Start a separate thread to release the reservation if not finalized within the timeout
+            new Thread(() -> releaseReservationIfNotPurchased(ticketId)).start();
+            return ticket;
+
+        } finally {
+            lock.unlock();
         }
     }
 
-    // Release reservation if the ticket is not finalized within the timeout
+    // Release reservation if not purchased within timeout
     private void releaseReservationIfNotPurchased(Long ticketId) {
         try {
-            TimeUnit.MILLISECONDS.sleep(RESERVATION_TIMEOUT);
+            // Wait for 1 minute to see if the purchase is finalized
+            TimeUnit.MILLISECONDS.sleep(RESERVATION_TIMEOUT_MS); // 1 minute timeout
 
-            Optional<Ticket> ticketOptional = pool.stream()
-                    .filter(ticket -> ticket.getTicketId().equals(ticketId) && "reserved".equals(ticket.getStatus()))
-                    .findFirst();
+            synchronized (this) {
+                Optional<Ticket> ticketOptional = ticketPool.stream()
+                        .filter(ticket -> ticket.getTicketId().equals(ticketId) && "Reserved".equals(ticket.getStatus()))
+                        .findFirst();
 
-            if (ticketOptional.isPresent()) {
-                Ticket ticket = ticketOptional.get();
-                // Release the reservation and set it back to "Available"
-                ticket.setStatus("Available");
-                System.out.println("Ticket " + ticketId + " reservation expired and released back to available.");
+                if (ticketOptional.isPresent()) {
+                    Ticket ticket = ticketOptional.get();
+                    // If the ticket is still reserved, release it and set it back to available
+                    ticket.setStatus("Available");
+                    ticket.setCustomerId(null);  // Clear the customerId
+                    System.out.println("Ticket " + ticketId + " reservation expired and is now available.");
+
+                    // Notify any waiting producer (if the pool is not full) that a ticket has become available
+                    notifyAll();
+                }
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -206,15 +303,9 @@ public class TicketPoolService {
         }
     }
 
-    @Transactional
-    // Finalize the sale and mark the ticket as sold
+    // Finalize sale for a ticket
     public synchronized void finalizeSale(Long ticketId, Long customerId) {
-        // Check if the customer exceeds the retrieval rate before finalizing purchase
-        if (exceedsRateLimit(customerId)) {
-            throw new IllegalStateException("Customer " + customerId + " has exceeded the request rate limit.");
-        }
-
-        Optional<Ticket> ticketOptional = pool.stream()
+        Optional<Ticket> ticketOptional = ticketPool.stream()
                 .filter(ticket -> ticket.getTicketId().equals(ticketId))
                 .findFirst();
 
@@ -225,38 +316,38 @@ public class TicketPoolService {
         Ticket ticket = ticketOptional.get();
 
         // Ensure the ticket is reserved and not already sold
-        if (!"reserved".equals(ticket.getStatus())) {
-            throw new IllegalStateException("Ticket " + ticketId + " is not reserved or has already been sold.");
+        if (!"Reserved".equals(ticket.getStatus())) {
+            throw new IllegalStateException("Ticket " + ticketId + " is not reserved.");
         }
 
-        synchronized (ticket) {  // Ensure thread-safety when marking as sold
-            if ("reserved".equals(ticket.getStatus())) {
-                ticket.setStatus("sold");
-                updateTicketStatus(ticketId, "sold");
-
-                pool.remove(ticket);  // Remove from the pool as sold
-                reservationLocks.remove(ticketId);  // Remove from lock map
-                ticketRepo.save(ticket);  // Save the ticket in the database
-                System.out.println("Ticket " + ticketId + " has been sold and removed from the pool.");
-            } else {
-                throw new IllegalStateException("Ticket " + ticketId + " is no longer reserved.");
-            }
+        // Ensure that the ticket is reserved by the correct customer
+        if (!ticket.getCustomerId().equals(customerId)) {
+            throw new IllegalStateException("Ticket " + ticketId + " was reserved by another customer.");
         }
-    }
 
-    // Method to update ticket status in the database (you'll need a service layer here)
-    private void updateTicketStatus(Long ticketId, String status) {
-        // Database update logic goes here
-        // Assuming a TicketService that interacts with the database
-        System.out.println("Updating ticket " + ticketId + " status to " + status);
-    }
+        synchronized (ticket) {
+            // Mark the ticket as sold
+            ticket.setStatus("Sold");
 
-    // Get all available tickets in the pool
-    public synchronized List<Ticket> getAllTickets() {
-        return new ArrayList<>(pool);
-    }
+            // Remove the ticket from the pool as it is sold
+            ticketPool.remove(ticket); // `remove` works efficiently with LinkedList
+            reservationLocks.remove(ticketId);
 
+            // Update the ticket in the database
+            ticketRepo.save(ticket);
+
+            System.out.println("Ticket " + ticketId + " has been sold and removed from the pool.");
+        }
+
+        // Notify any waiting producer that a ticket has been sold and space is available in the pool
+        notifyAll();
+    }
 }
+
+
+
+
+
 
 
 

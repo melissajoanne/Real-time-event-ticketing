@@ -12,7 +12,6 @@ public class Ticket {
     private double price;
     private String status;
     private Long vendorId;
-    private Long eventId;
     private Long customerId;
 
     public Long getCustomerId() {
@@ -43,13 +42,7 @@ public class Ticket {
         this.vendorId = vendorId;
     }
 
-    public Long getEventId() {
-        return eventId;
-    }
 
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
 
     public Long getTicketId() {
         return ticketId;
@@ -91,7 +84,6 @@ public class Ticket {
                 ", price=" + price +
                 ", status='" + status + '\'' +
                 ", vendorId=" + vendorId +
-                ", eventId=" + eventId +
                 '}';
     }
 }
