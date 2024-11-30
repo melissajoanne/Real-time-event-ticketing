@@ -11,67 +11,44 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
-    private long CustomerId;
-    private String CustomerName;
-    private String CustomerEmail;
-    private String CustomerPhone;
+    private long customerId;
+    private String customerName;
+    private String customerEmail;
+    private String customerPhone;
 
-    public Customer(long customerId, String customerName, String customerEmail, String customerPhone) {
-        CustomerId = customerId;
-        CustomerName = customerName;
-        CustomerEmail = customerEmail;
-        CustomerPhone = customerPhone;
-    }
-
-    public Customer(String customerName, String customerEmail, String customerPhone) {
-        CustomerName = customerName;
-        CustomerEmail = customerEmail;
-        CustomerPhone = customerPhone;
-    }
-
-    public Customer(){}
 
     public long getCustomerId() {
-        return CustomerId;
+        return customerId;
     }
 
     public void setCustomerId(long customerId) {
-        CustomerId = customerId;
+        this.customerId = customerId;
     }
 
     public String getCustomerName() {
-        return CustomerName;
+        return customerName;
     }
 
     public void setCustomerName(String customerName) {
-        CustomerName = customerName;
+        this.customerName = customerName;
     }
 
     public String getCustomerEmail() {
-        return CustomerEmail;
+        return customerEmail;
     }
 
     public void setCustomerEmail(String customerEmail) {
-        CustomerEmail = customerEmail;
+        this.customerEmail = customerEmail;
     }
 
     public String getCustomerPhone() {
-        return CustomerPhone;
+        return customerPhone;
     }
 
     public void setCustomerPhone(String customerPhone) {
-        CustomerPhone = customerPhone;
+        this.customerPhone = customerPhone;
     }
 
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "CustomerId=" + CustomerId +
-                ", CustomerName='" + CustomerName + '\'' +
-                ", CustomerEmail='" + CustomerEmail + '\'' +
-                ", CustomerPhone='" + CustomerPhone + '\'' +
-                '}';
-    }
+
 }
-
 

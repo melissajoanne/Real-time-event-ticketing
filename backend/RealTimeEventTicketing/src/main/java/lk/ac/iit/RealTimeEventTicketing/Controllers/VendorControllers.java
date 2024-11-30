@@ -53,9 +53,10 @@ public class VendorControllers {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Vendor> addVendor(@RequestBody Vendor vendor) {
+    public ResponseEntity<String> addVendor(@RequestBody Vendor vendor) {
         Vendor newVendor = vendorService.addVendor(vendor);
-        return new ResponseEntity<>(newVendor, HttpStatus.CREATED);
+        String responseMessage = "Your vendor ID is: " + newVendor.getVendorId() + ". Please use this ID when you add tickets.";
+        return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
