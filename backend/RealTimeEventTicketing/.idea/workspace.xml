@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2b0b2c38-c767-479f-a314-113cecb03caf" name="Changes" comment="updated" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="AnnotationType" />
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;melzjoanne&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/melissajoanne/Real-time-ticket.git&quot;,
+    &quot;accountId&quot;: &quot;4c48230a-9e90-4146-b272-79b90f2533e5&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2oZZpTqQm2WOfyBm5JEJ7lTnyYw" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
+    &quot;Maven.RealTimeEventTicketing [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.RealTimeEventTicketing [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.RealTimeEventTicketing [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.RealTimeEventTicketing [validate].executor&quot;: &quot;Run&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.RealTimeEventTicketingApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.RealTimeTicketApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/melzjoanne/Documents/GitHub/Real-time-ticket/backend/RealTimeEventTicketing&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.46551725&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.ApplicationConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="lk.ac.iit.RealTimeEventTicketing.model" />
+      <recent name="lk.ac.iit.RealTimeEventTicketing.repo" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="lk.ac.iit.RealTimeTicket" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="lk.ac.iit.RealTimeEventTicketing" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="RealTimeEventTicketingApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="RealTimeEventTicketing" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="lk.ac.iit.RealTimeEventTicketing.RealTimeEventTicketingApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2b0b2c38-c767-479f-a314-113cecb03caf" name="Changes" comment="" />
+      <created>1731079240510</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731079240510</updated>
+      <workItem from="1731079241632" duration="22149000" />
+      <workItem from="1731223425813" duration="5000" />
+      <workItem from="1731223442144" duration="229000" />
+      <workItem from="1731224119131" duration="1221000" />
+      <workItem from="1731233082194" duration="5738000" />
+      <workItem from="1731474575144" duration="14000" />
+      <workItem from="1731476415235" duration="2490000" />
+      <workItem from="1731498705504" duration="203000" />
+      <workItem from="1731498928688" duration="5000" />
+      <workItem from="1731499263486" duration="17238000" />
+      <workItem from="1731581379824" duration="16091000" />
+      <workItem from="1731655657338" duration="889000" />
+      <workItem from="1731661009700" duration="27552000" />
+      <workItem from="1731866402039" duration="16376000" />
+      <workItem from="1732018667791" duration="10898000" />
+      <workItem from="1732088859542" duration="977000" />
+      <workItem from="1732256575675" duration="1161000" />
+      <workItem from="1732257748512" duration="5000" />
+      <workItem from="1732257958684" duration="21297000" />
+      <workItem from="1732285574668" duration="1432000" />
+      <workItem from="1732287103354" duration="5809000" />
+      <workItem from="1732296267107" duration="673000" />
+      <workItem from="1732296946492" duration="4070000" />
+      <workItem from="1732342777759" duration="66675000" />
+      <workItem from="1732517210011" duration="1084000" />
+      <workItem from="1732518311369" duration="8170000" />
+      <workItem from="1732545036327" duration="2559000" />
+      <workItem from="1732548374641" duration="38000" />
+      <workItem from="1732548438266" duration="2630000" />
+      <workItem from="1732551885273" duration="22031000" />
+      <workItem from="1732614342258" duration="22610000" />
+      <workItem from="1732762577298" duration="91621000" />
+      <workItem from="1733122165953" duration="374000" />
+      <workItem from="1733122575222" duration="5000" />
+    </task>
+    <task id="LOCAL-00001" summary="Completed CRUD">
+      <option name="closed" value="true" />
+      <created>1732275056090</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1732275056091</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Config added">
+      <option name="closed" value="true" />
+      <created>1732391040280</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1732391040280</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Crud update">
+      <option name="closed" value="true" />
+      <created>1732556852162</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1732556852162</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Method for vendor ticket releasing method">
+      <option name="closed" value="true" />
+      <created>1732768420379</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1732768420379</updated>
+    </task>
+    <task id="LOCAL-00005" summary="TicketPool done">
+      <option name="closed" value="true" />
+      <created>1732776090459</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1732776090459</updated>
+    </task>
+    <task id="LOCAL-00006" summary="customer ticket reservation">
+      <option name="closed" value="true" />
+      <created>1732871287356</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1732871287356</updated>
+    </task>
+    <task id="LOCAL-00007" summary="producer consumer pattern update">
+      <option name="closed" value="true" />
+      <created>1732888215736</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1732888215736</updated>
+    </task>
+    <task id="LOCAL-00008" summary="handling situations (no tickets available)">
+      <option name="closed" value="true" />
+      <created>1732899476715</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1732899476715</updated>
+    </task>
+    <task id="LOCAL-00009" summary="logins done">
+      <option name="closed" value="true" />
+      <created>1732986475802</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1732986475803</updated>
+    </task>
+    <task id="LOCAL-00010" summary="updated">
+      <option name="closed" value="true" />
+      <created>1733114193896</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1733114193896</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Completed CRUD" />
+    <MESSAGE value="Config added" />
+    <MESSAGE value="Crud update" />
+    <MESSAGE value="Method for vendor ticket releasing method" />
+    <MESSAGE value="TicketPool done" />
+    <MESSAGE value="customer ticket reservation" />
+    <MESSAGE value="producer consumer pattern update" />
+    <MESSAGE value="handling situations (no tickets available)" />
+    <MESSAGE value="logins done" />
+    <MESSAGE value="updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

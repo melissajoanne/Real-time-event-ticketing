@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/RealTimeEventTicketing/RealTimeEventTicketing.iml" filepath="$PROJECT_DIR$/RealTimeEventTicketing/RealTimeEventTicketing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RealTimeTicket/RealTimeTicket.iml" filepath="$PROJECT_DIR$/RealTimeTicket/RealTimeTicket.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/backend.iml" filepath="$PROJECT_DIR$/.idea/backend.iml" />
+    </modules>
+  </component>
+</project>
