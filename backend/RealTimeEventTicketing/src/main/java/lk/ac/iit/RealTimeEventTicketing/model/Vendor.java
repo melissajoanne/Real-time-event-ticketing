@@ -5,46 +5,30 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-public class Vendor {
+public  class Vendor extends User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Long vendorId;
 
-    private String vendorName;
-    private String email;
-    private int ticketReleaseInterval;
+    public Vendor() {
 
-    public int getTicketReleaseInterval() {
-        return ticketReleaseInterval;
-    }
-
-    public void setTicketReleaseInterval(int ticketReleaseInterval) {
-        this.ticketReleaseInterval = ticketReleaseInterval;
     }
 
     public Long getVendorId() {
         return vendorId;
     }
 
-    public void setVendorId(Long id) {
+    public void setVendorId(Long vendorId) {
         this.vendorId = vendorId;
     }
 
-    public String getVendorName() {
-        return vendorName;
+    public Vendor(String name, String email, Long vendorId) {
+        super(name, email);
+        this.vendorId = vendorId;
     }
 
-    public void setVendorName(String name) {
-        this.vendorName = vendorName;
+    public Vendor(Long vendorId) {
+        this.vendorId = vendorId;
     }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
 }

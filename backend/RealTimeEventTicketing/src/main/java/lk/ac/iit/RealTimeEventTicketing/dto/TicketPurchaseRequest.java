@@ -6,10 +6,20 @@ public class TicketPurchaseRequest {
     public TicketPurchaseRequest(Long customerId) {
         CustomerId = customerId;
     }
+    private boolean finalizePurchase;
+
+    public boolean isFinalizePurchase() {
+        return finalizePurchase;
+    }
+
+    public void setFinalizePurchase(boolean finalizePurchase) {
+        this.finalizePurchase = finalizePurchase;
+    }
 
     public Long getCustomerId() {
         return CustomerId;
     }
+
 
     public void setCustomerId(Long customerId) {
         CustomerId = customerId;

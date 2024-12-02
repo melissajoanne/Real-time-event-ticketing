@@ -1,8 +1,6 @@
 package lk.ac.iit.RealTimeEventTicketing.model;
+
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Event {
@@ -12,12 +10,15 @@ public class Event {
     private Long eventId;
     private String eventName;
 
+    public Event() {
+    }
+
     public Long getEventId() {
         return eventId;
     }
 
     public void setEventId(Long eventId) {
-        this.eventId = eventId;
+        eventId = eventId;
     }
 
     public String getEventName() {
@@ -28,4 +29,4 @@ public class Event {
         this.eventName = eventName;
     }
 }
-//database
+

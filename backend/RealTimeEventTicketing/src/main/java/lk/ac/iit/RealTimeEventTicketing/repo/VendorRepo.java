@@ -8,4 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface VendorRepo extends JpaRepository<Vendor,Long> {
+    Optional<Vendor> findById(Long vendor);
 }
