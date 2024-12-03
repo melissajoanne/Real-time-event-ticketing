@@ -6,10 +6,8 @@ import lk.ac.iit.RealTimeEventTicketing.dto.TicketPurchaseRequest;
 import lk.ac.iit.RealTimeEventTicketing.dto.TicketReleaseRequest;
 import lk.ac.iit.RealTimeEventTicketing.dto.TicketReserveRequest;
 import lk.ac.iit.RealTimeEventTicketing.model.Customer;
-import lk.ac.iit.RealTimeEventTicketing.model.Event;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
-import lk.ac.iit.RealTimeEventTicketing.repo.EventRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.VendorRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,20 +29,18 @@ public class TicketController {
     private TicketRepo ticketRepo;
     private TicketPurchaseRequest request;
     private TicketReserveRequest reserveRequest;
-    private final VendorRepo vendorRepo;
-    private final EventRepo eventRepo;
+    private VendorRepo vendorRepo;
 
     private Ticket ticket;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);  // Limit of 10 vendors
 
 
     @Autowired
-    public TicketController(TicketService ticketService, TicketPoolService ticketPoolService, TicketRepo ticketRepo, VendorRepo vendorRepo, EventRepo eventRepo) {
+    public TicketController(TicketService ticketService, TicketPoolService ticketPoolService, TicketRepo ticketRepo,VendorRepo vendorRepo) {
         this.ticketService = ticketService;
         this.ticketPoolService = ticketPoolService;
         this.ticketRepo = ticketRepo;
         this.vendorRepo = vendorRepo;
-        this.eventRepo = eventRepo;
     }
     @PostMapping("/vendor/{vendorId}/add")
     public ResponseEntity<String> addTicket(@PathVariable Long vendorId, @RequestBody TicketReleaseRequest releaseRequest) {
@@ -68,46 +64,12 @@ public class TicketController {
             return new ResponseEntity<>("Error while releasing tickets: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//@PostMapping("/vendor/{vendorId}/event/{eventId}/add")
-//public ResponseEntity<String> addTicket(
-//        @PathVariable Long vendorId,
-//        @PathVariable Long eventId,
-//        @RequestBody TicketReleaseRequest releaseRequest) {
-//    try {
-//        // Validate the ticketsPerRelease parameter
-//        if (releaseRequest.getTicketsPerRelease() <= 0) {
-//            return new ResponseEntity<>("Invalid number of tickets per release.", HttpStatus.BAD_REQUEST);
-//        }
-//
-//        // Check if the vendor exists in the database
-//        Optional<Vendor> vendorOpt = vendorRepo.findById(vendorId);
-//        if (!vendorOpt.isPresent()) {
-//            return new ResponseEntity<>("Vendor with ID " + vendorId + " not found.", HttpStatus.NOT_FOUND);
-//        }
-//
-//        // Check if the event exists in the database
-//        Optional<Event> eventOpt = eventRepo.findById(eventId);
-//        if (!eventOpt.isPresent()) {
-//            return new ResponseEntity<>("Event with ID " + eventId + " not found.", HttpStatus.NOT_FOUND);
-//        }
-//
-//        // Validate if the vendor is allowed to release tickets for the event
-//        Vendor vendor = vendorOpt.get();
-//        Event event = eventOpt.get();
-//
-//        if (!event.getVendors().contains(vendor)) {
-//            return new ResponseEntity<>("Vendor with ID " + vendorId + " is not associated with event ID " + eventId,
-//                    HttpStatus.FORBIDDEN);
-//        }
-//
-//        // Submit the task to executorService to handle it in a separate thread
-//        executorService.submit(() -> ticketService.releaseTickets(vendorId, eventId, releaseRequest));
-//
-//        return new ResponseEntity<>("Ticket release process started for event ID " + eventId + ".", HttpStatus.OK);
-//    } catch (Exception e) {
-//        return new ResponseEntity<>("Error while releasing tickets: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-//}
+
+    @GetMapping("/count-available")
+    public ResponseEntity<Integer> getCountTickets() {
+        int availableTickets = ticketPoolService.countAvailableTickets();
+        return new ResponseEntity<>(availableTickets, HttpStatus.OK);
+    }
 
 
     @GetMapping("/find/{ticketId}")
@@ -125,11 +87,6 @@ public class TicketController {
         return new ResponseEntity<>(ticketService.deleteTicket(ticketId), HttpStatus.OK);
     }
 
-    @GetMapping("/available")
-    public ResponseEntity<Map<String, Object>> getAvailableTickets() {
-        Map<String, Object> response = ticketPoolService.getAvailableTickets();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
 
 //    @PostMapping("/reserve/{ticketId}")
 //    public ResponseEntity<String> reserveTicket(@PathVariable Long ticketId, @RequestBody TicketReserveRequest request) {
@@ -165,9 +122,41 @@ public class TicketController {
     // You can call this method to notify customers when new tickets are added
 
 
+//    @PostMapping("/reserve")
+//    public ResponseEntity<Ticket> reserveTicket(@RequestBody TicketReserveRequest request) {
+//        Long customerId = request.getCustomerId();
+//        try {
+//            Ticket reservedTicket = ticketPoolService.reserveNextAvailableTicket(customerId);
+//            return ResponseEntity.ok(reservedTicket);
+//        } catch (IllegalStateException e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+//        }
+//    }
+//
+//    @PostMapping("/finalize")
+//    public ResponseEntity<String> finalizeSale(@RequestBody TicketPurchaseRequest request) {
+//        Long customerId = request.getCustomerId();
+//        try {
+//            ticketPoolService.finalizeSale(customerId);
+//            return ResponseEntity.ok("Sale finalized successfully.");
+//        } catch (IllegalStateException e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to finalize sale: " + e.getMessage());
+//        }
+//    }
+
+    // Retrieve all available tickets in the pool
+    @GetMapping("/available")
+    public ResponseEntity<Map<String, Object>> getAvailableTickets() {
+        try {
+            Map<String, Object> response = ticketPoolService.getAvailableTickets();
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(Map.of("message", "Error retrieving tickets: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PostMapping("/reserve")
-    public ResponseEntity<Ticket> reserveTicket(@RequestBody TicketReserveRequest request) {
-        Long customerId = request.getCustomerId();
+    public synchronized ResponseEntity<Ticket> reserveTicket(@RequestHeader("customerId") Long customerId) {
+        System.out.println("Received customerId: " + customerId);
         try {
             Ticket reservedTicket = ticketPoolService.reserveNextAvailableTicket(customerId);
             return ResponseEntity.ok(reservedTicket);
@@ -176,8 +165,7 @@ public class TicketController {
         }
     }
     @PostMapping("/finalize")
-    public ResponseEntity<String> finalizeSale(@RequestBody TicketPurchaseRequest request) {
-        Long customerId = request.getCustomerId();
+    public ResponseEntity<String> finalizeSale(@RequestHeader("customerId") Long customerId) {
         try {
             ticketPoolService.finalizeSale(customerId);
             return ResponseEntity.ok("Sale finalized successfully.");
@@ -187,3 +175,6 @@ public class TicketController {
     }
 
 }
+
+
+

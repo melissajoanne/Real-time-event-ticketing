@@ -7,15 +7,24 @@ import lombok.Setter;
 
 @Entity
 @Data
-public class Customer {
+public class Customer extends User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private long customerId;
-    private String customerName;
-    private String customerEmail;
-    private String customerPhone;
 
+    public Customer(String name, String email, long customerId) {
+        super(name, email);
+        this.customerId = customerId;
+    }
+
+    public Customer(long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Customer() {
+
+    }
 
     public long getCustomerId() {
         return customerId;
@@ -25,29 +34,6 @@ public class Customer {
         this.customerId = customerId;
     }
 
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public String getCustomerEmail() {
-        return customerEmail;
-    }
-
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
-    }
-
-    public String getCustomerPhone() {
-        return customerPhone;
-    }
-
-    public void setCustomerPhone(String customerPhone) {
-        this.customerPhone = customerPhone;
-    }
 
 
 }

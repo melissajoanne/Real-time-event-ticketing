@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static lk.ac.iit.RealTimeEventTicketing.Service.VendorService.HARDCODED_EVENTS;
+
 @RestController
 @RequestMapping("/vendor")
 public class VendorControllers {
@@ -40,6 +42,10 @@ public class VendorControllers {
         this.config = config;
     }
 
+    @GetMapping("/events")
+    public ResponseEntity<List<String>> getAvailableEvents() {
+        return ResponseEntity.ok(HARDCODED_EVENTS);
+    }
     @GetMapping("/all")
     public ResponseEntity<List<Vendor>> getAllVendors() {
         List<Vendor> vendors = vendorService.findAllVendors();

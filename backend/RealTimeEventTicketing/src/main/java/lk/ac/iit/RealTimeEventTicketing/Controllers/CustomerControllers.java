@@ -2,11 +2,14 @@ package lk.ac.iit.RealTimeEventTicketing.Controllers;
 
 import lk.ac.iit.RealTimeEventTicketing.Service.CustomerService;
 import lk.ac.iit.RealTimeEventTicketing.model.Customer;
+import lk.ac.iit.RealTimeEventTicketing.repo.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,12 +17,13 @@ import java.util.Map;
 @RequestMapping("/customer")
 public class CustomerControllers {
     private final CustomerService customerService;
+    private CustomerRepo customerRepo;
+
 
     @Autowired
     public CustomerControllers(CustomerService customerService) {
         this.customerService = customerService;
     }
-
 
 
     @GetMapping("/all")
@@ -50,7 +54,20 @@ public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
 
         return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
     }
-@PutMapping("/update")
+//@PostMapping("/addCustomer")
+//public ResponseEntity<Map<String, Object>> addCustomer(@RequestBody Customer customer) {
+//    // Save the customer and generate an ID
+//    Customer savedCustomer = customerRepo.save(customer);
+//
+//    // Return the generated customerId in the response
+//    Map<String, Object> response = new HashMap<>();
+//    response.put("customerId", savedCustomer.getCustomerId());
+//    response.put("message", "Customer added successfully.");
+//
+//    return ResponseEntity.ok(response);
+//}
+
+    @PutMapping("/update")
 public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) {
 Customer updatedCustomer = customerService.updateCustomer(customer);
 return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);

@@ -12,7 +12,8 @@ import java.util.UUID;
 
 @Service
 public class CustomerService {
-    private final CustomerRepo customerRepo;
+    @Autowired
+    private CustomerRepo customerRepo;
 
     @Autowired
     public CustomerService(CustomerRepo customerRepo) {
@@ -22,6 +23,7 @@ public class CustomerService {
     public Customer addCustomer(Customer customer) {
         return customerRepo.save(customer);
     }
+
     public Customer updateCustomer(Customer customer) {
         return customerRepo.save(customer);
     }

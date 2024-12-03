@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -16,6 +17,12 @@ public class VendorService {
 
     @Autowired
     private VendorRepo vendorRepo;
+    public static final List<String> HARDCODED_EVENTS = Arrays.asList("Music Fest", "Tech Expo", "Sports Gala");
+
+    public List<String> getAvailableEvents() {
+        return HARDCODED_EVENTS;
+    }
+
 
     private static final Logger logger=(Logger) LoggerFactory.getLogger(VendorService.class);
 
