@@ -1,14 +1,43 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';  // Import CommonModule if needed for ngIf, ngFor, etc.
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';  // Import Router
+
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,NzLayoutModule],
+  imports: [RouterOutlet, CommonModule, HttpClientModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'frontend';
+  constructor(private http: HttpClient, private router: Router) {}
+  title = 'RealTimeFrontEndAngular';
+
+  ngOnInit() {
+    // this.getData();
+  }
+
+  getData() {
+    const apiUrl = 'https://jsonplaceholder.typicode.com/posts';  // Example API URL
+    this.http.get(apiUrl).subscribe(
+      (response) => {
+        console.log('API Response:', response);
+      },
+      (error) => {
+        console.error('Error occurred:', error);
+      }
+    );
+  }
+
+  goToAbout() {
+    this.router.navigate(['/user-selection']);  // Navigate to About page
+  }
 }
+
+

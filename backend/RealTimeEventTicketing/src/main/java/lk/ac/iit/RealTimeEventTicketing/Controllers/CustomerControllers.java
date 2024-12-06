@@ -3,8 +3,11 @@ package lk.ac.iit.RealTimeEventTicketing.Controllers;
 import lk.ac.iit.RealTimeEventTicketing.Service.CustomerService;
 import lk.ac.iit.RealTimeEventTicketing.model.Customer;
 import lk.ac.iit.RealTimeEventTicketing.repo.CustomerRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/customer")
 public class CustomerControllers {
@@ -27,10 +31,10 @@ public class CustomerControllers {
 
 
     @GetMapping("/all")
-public ResponseEntity<List<Customer>> getAllCustomers() {
-List<Customer> customers = customerService.findAllCustomers();
-return new ResponseEntity<>(customers, HttpStatus.OK);
-}
+    public ResponseEntity<List<Customer>> getAllCustomers() {
+    List<Customer> customers = customerService.findAllCustomers();
+    return new ResponseEntity<>(customers, HttpStatus.OK);
+    }
 
 @GetMapping("/find/{customerId}")
 public ResponseEntity<Customer> getCustomerById(@PathVariable Long customerId) {
@@ -46,13 +50,22 @@ public ResponseEntity<Customer> getCustomerById(@PathVariable Long customerId) {
 //return new ResponseEntity<>(newCustomer, HttpStatus.CREATED);
 //}
 @PostMapping("/add")
+//@CrossOrigin(origins = "http://localhost:4200")
 public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
-        Customer newCustomer = customerService.addCustomer(customer);
+        log.info("In customer controller");
+        log.info("Customer: " + customer.toString());
+        String responseMessage = null;
 
-        // Create the response message using the customer ID
-        String responseMessage = "Your customer ID is: " + newCustomer.getCustomerId() + ". Please use this ID when you book tickets.";
+        try {
+            Customer newCustomer = customerService.addCustomer(customer);
+            responseMessage = "Your customer ID is: [" + newCustomer.getCustomerId() + "]. Please use this ID when you book tickets.";
 
-        return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body("{ \"message\": \"Customer " +responseMessage+ "successfully\" }");
     }
 //@PostMapping("/addCustomer")
 //public ResponseEntity<Map<String, Object>> addCustomer(@RequestBody Customer customer) {

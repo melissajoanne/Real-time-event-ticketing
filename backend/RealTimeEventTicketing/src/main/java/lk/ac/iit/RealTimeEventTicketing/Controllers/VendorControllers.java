@@ -2,6 +2,7 @@ package lk.ac.iit.RealTimeEventTicketing.Controllers;
 
 import lk.ac.iit.RealTimeEventTicketing.Config;
 import lk.ac.iit.RealTimeEventTicketing.Service.*;
+import lk.ac.iit.RealTimeEventTicketing.dto.VendorResponseDto;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
@@ -58,14 +59,51 @@ public class VendorControllers {
         return new ResponseEntity<>(vendor, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addVendor(@RequestBody Vendor vendor) {
+//    @PostMapping("/add")
+//    public ResponseEntity<String> addVendor(@RequestBody Vendor vendor) {
+//        logger.info("In vendor controller");
+//        logger.info("Vendor: " + vendor.toString());
+//        String responseMessage = null;
+//
+//        try {
+//            Vendor newVendor = vendorService.addVendor(vendor);
+//            responseMessage = "Your vendor ID is: [" + newVendor.getVendorId() + "]. Please use this ID when you add tickets.";
+//            return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            logger.info(e.getMessage());
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.CREATED)
+//                .body("{ \"message\": \"Vendor" +responseMessage+ "successfully\" }");
+//        Vendor newVendor = vendorService.addVendor(vendor);
+//        String responseMessage = "Your vendor ID is: " + newVendor.getVendorId() + ". Please use this ID when you add tickets.";
+//        return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
+
+@PostMapping("/add")
+public ResponseEntity<VendorResponseDto> addVendor(@RequestBody Vendor vendor) {
+    logger.info("In vendor controller");
+    logger.info("Vendor: " + vendor.toString());
+
+    try {
         Vendor newVendor = vendorService.addVendor(vendor);
         String responseMessage = "Your vendor ID is: " + newVendor.getVendorId() + ". Please use this ID when you add tickets.";
-        return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
-    }
 
-    @PutMapping("/update")
+        // Create a response DTO object
+        VendorResponseDto response = new VendorResponseDto(responseMessage, Math.toIntExact(newVendor.getVendorId()));
+
+        // Return the response as JSON
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    } catch (Exception e) {
+        logger.error("Error occurred while adding vendor: " + e.getMessage());
+
+        // Return an error response in case of an exception
+        VendorResponseDto errorResponse = new VendorResponseDto("An error occurred while adding the vendor. Please try again later.", null);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+}
+
+
+@PutMapping("/update")
     public ResponseEntity<Vendor> updateVendor(@RequestBody Vendor vendor) {
         Vendor updatedVendor = vendorService.updateVendor(vendor);
         return new ResponseEntity<>(updatedVendor, HttpStatus.OK);

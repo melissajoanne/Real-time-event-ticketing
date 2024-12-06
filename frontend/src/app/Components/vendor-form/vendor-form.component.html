@@ -1,0 +1,80 @@
+<nav class="navbar navbar-expand-md bg-body py-3" style="color: var(--bs-navbar-active-color); text-shadow: 0px 0px; background: #ffffff69; --bs-body-bg: var(--bs-body-bg);">
+    <form (ngSubmit)="onSubmit(vendorForm)" #vendorForm="ngForm">
+
+    </form><div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon"></span>
+            <span>MyShowOne</span>
+        </a>
+        <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-2">
+            <span class="visually-hidden">Toggle navigation</span>
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navcol-2" style="color: rgb(58,157,177); background: #ffffff;">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Admin</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Search</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="py-4 py-xl-5">
+    <div class="container py-4 py-xl-5">
+        <div class="row mb-5">
+            <div class="col-md-8 col-xl-6 text-center mx-auto">
+                <h2>Release Tickets</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="position-relative py-4 py-xl-5">
+    <form #vendorForm="ngForm" (ngSubmit)="onSubmit(vendorForm)">
+        <div class="container position-relative">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+                    <div class="card mb-5">
+                        <div class="card-body p-sm-5">
+                            <h2 class="text-center mb-4">Fill Your Information</h2>
+
+                            <!-- Vendor Registration Form -->
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Vendor Name</label>
+                                <input class="form-control" id="name" name="name" [(ngModel)]="vendor.name" required placeholder="Enter Vendor Name">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input class="form-control" id="email" name="email" [(ngModel)]="vendor.email" type="email" required placeholder="Enter Email">
+                            </div>
+
+                            <!-- Error and Success Messages -->
+                            <div *ngIf="errorMessage" class="alert alert-danger">
+                                {{ errorMessage }}
+                            </div>
+                            <div *ngIf="successMessage" class="alert alert-success">
+                                {{ successMessage }}
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div>
+                                <button class="btn btn-primary d-block w-100" type="submit" [disabled]="!vendorForm.valid">Add Vendor</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<p style="margin: 150px 0px 0px; color: var(--bs-emphasis-color); font-size: 18px; font-weight: bold; font-style: italic; text-align: left;">
+    <!-- This paragraph can be removed or customized as needed -->
+</p>
+
+    <!-- <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+       <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/Navbar-Centered-Links-icons.css"> -->
+

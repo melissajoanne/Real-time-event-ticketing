@@ -2,6 +2,7 @@ package lk.ac.iit.RealTimeEventTicketing.Controllers;
 
 import lk.ac.iit.RealTimeEventTicketing.Service.TicketPoolService;
 import lk.ac.iit.RealTimeEventTicketing.Service.TicketService;
+import lk.ac.iit.RealTimeEventTicketing.dto.ResponseDto;
 import lk.ac.iit.RealTimeEventTicketing.dto.TicketPurchaseRequest;
 import lk.ac.iit.RealTimeEventTicketing.dto.TicketReleaseRequest;
 import lk.ac.iit.RealTimeEventTicketing.dto.TicketReserveRequest;
@@ -36,12 +37,13 @@ public class TicketController {
 
 
     @Autowired
-    public TicketController(TicketService ticketService, TicketPoolService ticketPoolService, TicketRepo ticketRepo,VendorRepo vendorRepo) {
+    public TicketController(TicketService ticketService, TicketPoolService ticketPoolService, TicketRepo ticketRepo, VendorRepo vendorRepo) {
         this.ticketService = ticketService;
         this.ticketPoolService = ticketPoolService;
         this.ticketRepo = ticketRepo;
         this.vendorRepo = vendorRepo;
     }
+
     @PostMapping("/vendor/{vendorId}/add")
     public ResponseEntity<String> addTicket(@PathVariable Long vendorId, @RequestBody TicketReleaseRequest releaseRequest) {
         try {
@@ -154,8 +156,9 @@ public class TicketController {
             return new ResponseEntity<>(Map.of("message", "Error retrieving tickets: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/reserve")
-    public synchronized ResponseEntity<Ticket> reserveTicket(@RequestHeader("customerId") Long customerId) {
+    public synchronized ResponseEntity<Ticket> reserveTicket(@RequestHeader("x-customer-id") Long customerId) {
         System.out.println("Received customerId: " + customerId);
         try {
             Ticket reservedTicket = ticketPoolService.reserveNextAvailableTicket(customerId);
@@ -164,16 +167,30 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
     @PostMapping("/finalize")
-    public ResponseEntity<String> finalizeSale(@RequestHeader("customerId") Long customerId) {
+    public ResponseEntity<ResponseDto> finalizeSale(@RequestHeader("x-customer-id") Long customerId) {
         try {
             ticketPoolService.finalizeSale(customerId);
-            return ResponseEntity.ok("Sale finalized successfully.");
+            return ResponseEntity.ok(new ResponseDto("Sale finalized successfully."));
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to finalize sale: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto("Failed to finalize sale: " + e.getMessage()));
+
         }
     }
 
+
+    @GetMapping("/count")
+    public ResponseEntity<Integer> countAvailableTickets() {
+        try {
+            int availableTickets = ticketPoolService.countAvailableTickets();
+            return ResponseEntity.ok(availableTickets);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+
+    }
 }
 
 

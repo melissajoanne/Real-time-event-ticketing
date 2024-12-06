@@ -339,6 +339,8 @@ public class TicketPoolService {
         }
     }
 
+
+
     // Count available tickets
     public int countAvailableTickets() {
         return (int) ticketPool.stream()

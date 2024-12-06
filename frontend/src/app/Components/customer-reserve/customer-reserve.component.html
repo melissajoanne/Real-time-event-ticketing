@@ -1,0 +1,69 @@
+<nav class="navbar navbar-expand-md bg-body py-3" style="color: var(--bs-navbar-active-color); text-shadow: 0px 0px; background: #ffffff69;">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon"></span>
+            <span>MyShowOne</span>
+        </a>
+        <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navbarNav">
+            <span class="visually-hidden">Toggle navigation</span>
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav" style="color: rgb(58,157,177); background: #ffffff;">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Admin</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Search</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="py-4 py-xl-5"></section>
+
+<div class="carousel slide" data-bs-ride="carousel" id="carousel-1" style="height: 600px;">
+    <div class="carousel-inner h-100">
+        <div class="carousel-item active h-100">
+            <img class="w-100 d-block position-absolute h-100 fit-cover" src="assets/img/tt.jpg" alt="Slide Image" style="z-index: -1;">
+            <div class="container d-flex flex-column justify-content-center h-100">
+                <div class="row">
+                    <div class="col-md-6 col-xl-4 offset-md-2">
+                        <div style="max-width: 350px;">
+                            <h1 class="text-uppercase fw-bold">
+                                <span style="background-color: rgba(255, 255, 255, 0.72);">Music Fest, Food Corner, and</span>
+                                <span style="background-color: rgba(255, 255, 255, 0.81);"></span>
+                                <span style="background-color: rgba(255, 255, 255, 0.72);">Fashion Show</span>
+                            </h1>
+                            <p class="my-3">
+                                Date: 10.01.2025<br>
+                                Time: 7.00 pm to next day morning<br>
+                                Location: Sugathadasa Stadium, Colombo 13
+                            </p>
+                            <button class="btn btn-primary btn-lg me-2" (click)="onSubmit()">Buy Tickets</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- You can add more carousel items here if needed -->
+    </div>
+    <a class="carousel-control-prev" href="#carousel-1" role="button" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carousel-1" role="button" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Next</span>
+    </a>
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="2"></button>
+    </div>
+</div>
+
+<p style="margin: 150px 0px 0px;color: var(--bs-emphasis-color);font-size: 18px;font-weight: bold;font-style: italic;text-align: left;">
+    <!-- Optional message (can be removed or customized) -->
+</p>
+
+<!-- Cleaned up commented-out script and stylesheet links -->
+
