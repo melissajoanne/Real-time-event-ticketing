@@ -12,7 +12,6 @@ import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http'
   styleUrls: ['./vendor-form.component.css']
 })
 export class VendorFormComponent {
-
   vendor = {
     name: '',
     email: ''
@@ -22,18 +21,6 @@ export class VendorFormComponent {
   errorMessage: string = '';
 
   constructor(private http: HttpClient, private router: Router) {}
-
-  extractVendorId(message: string): string | null {
-    // Regular expression to match the value between square brackets
-    const regex = /\[(.*?)\]/;
-    const match = message.match(regex);
-
-    if (match && match[1]) {
-      return match[1].trim();  // Trim any whitespace
-    } else {
-      return null;
-    }
-  }
 
   onSubmit(vendorForm: NgForm) {
     if (vendorForm.valid) {
@@ -47,8 +34,8 @@ export class VendorFormComponent {
         next: (response: any) => {
           console.log('Response from backend:', response);  // Log the response to see its structure
   
-          // Ensure you are extracting vendorId correctly
-          const vendorId = response.vendorId;  // Should be 10 based on your raw response
+          // Ensure you are extracting vendorId correctly from the response
+          const vendorId = response.vendorId;  // Assuming this is in the response object
           console.log("Vendor ID:", vendorId);
   
           if (vendorId !== null && vendorId !== undefined) {
@@ -60,7 +47,8 @@ export class VendorFormComponent {
             this.successMessage = `Vendor added successfully! Your vendor ID is: ${vendorId}`;
             this.errorMessage = '';  // Reset error message
   
-            
+            // Navigate to the vendor-release page only after successful submission
+            this.router.navigate(['/vendor-release']);
           } else {
             this.errorMessage = 'Vendor ID not returned in the response.';
           }
@@ -78,12 +66,9 @@ export class VendorFormComponent {
       console.log('Form is invalid');
       this.errorMessage = 'Please fill out the form correctly.';
     }
-  
-   
+  }
+}
 
 
-  this.router.navigate(['/vendor-release']);
-}
-}
 
 

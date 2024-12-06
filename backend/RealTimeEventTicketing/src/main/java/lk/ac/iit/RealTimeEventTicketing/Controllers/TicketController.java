@@ -2,10 +2,7 @@ package lk.ac.iit.RealTimeEventTicketing.Controllers;
 
 import lk.ac.iit.RealTimeEventTicketing.Service.TicketPoolService;
 import lk.ac.iit.RealTimeEventTicketing.Service.TicketService;
-import lk.ac.iit.RealTimeEventTicketing.dto.ResponseDto;
-import lk.ac.iit.RealTimeEventTicketing.dto.TicketPurchaseRequest;
-import lk.ac.iit.RealTimeEventTicketing.dto.TicketReleaseRequest;
-import lk.ac.iit.RealTimeEventTicketing.dto.TicketReserveRequest;
+import lk.ac.iit.RealTimeEventTicketing.dto.*;
 import lk.ac.iit.RealTimeEventTicketing.model.Customer;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
@@ -44,28 +41,56 @@ public class TicketController {
         this.vendorRepo = vendorRepo;
     }
 
-    @PostMapping("/vendor/{vendorId}/add")
-    public ResponseEntity<String> addTicket(@PathVariable Long vendorId, @RequestBody TicketReleaseRequest releaseRequest) {
+//    @PostMapping("/vendor/{vendorId}/add")
+//    public ResponseEntity<String> addTicket(@PathVariable Long vendorId, @RequestBody TicketReleaseRequest releaseRequest) {
+//        try {
+//            // Validate the ticketsPerRelease parameter
+//            if (releaseRequest.getTicketsPerRelease() <= 0) {
+//                return new ResponseEntity<>("Invalid number of tickets per release.", HttpStatus.BAD_REQUEST);
+//            }
+//
+//            // Check if the vendor exists in the database
+//            Optional<Vendor> vendor = vendorRepo.findById(vendorId);
+//            if (!vendor.isPresent()) {
+//                return new ResponseEntity<>("Vendor with ID " + vendorId + " not found.", HttpStatus.NOT_FOUND);
+//            }
+//
+//            // Submit the task to executorService to handle it in a separate thread
+//            executorService.submit(() -> ticketService.releaseTickets(vendorId, releaseRequest));
+//
+//            return new ResponseEntity<>("Ticket release process started.", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("Error while releasing tickets: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+    @PostMapping("/vendor/release")
+    public ResponseEntity<MessageResponse> addTicket(
+            @RequestHeader("x-vendor-id") Long vendorId,
+            @RequestBody TicketReleaseRequest releaseRequest) {
         try {
-            // Validate the ticketsPerRelease parameter
             if (releaseRequest.getTicketsPerRelease() <= 0) {
-                return new ResponseEntity<>("Invalid number of tickets per release.", HttpStatus.BAD_REQUEST);
+                // Return structured error response
+                return new ResponseEntity<>(new MessageResponse("error", "Invalid number of tickets per release."), HttpStatus.BAD_REQUEST);
             }
 
-            // Check if the vendor exists in the database
             Optional<Vendor> vendor = vendorRepo.findById(vendorId);
             if (!vendor.isPresent()) {
-                return new ResponseEntity<>("Vendor with ID " + vendorId + " not found.", HttpStatus.NOT_FOUND);
+                // Return structured error response
+                return new ResponseEntity<>(new MessageResponse("error", "Vendor with ID " + vendorId + " not found."), HttpStatus.NOT_FOUND);
             }
 
-            // Submit the task to executorService to handle it in a separate thread
+            // Start the ticket release process asynchronously
             executorService.submit(() -> ticketService.releaseTickets(vendorId, releaseRequest));
 
-            return new ResponseEntity<>("Ticket release process started.", HttpStatus.OK);
+            // Return a structured success response
+            return new ResponseEntity<>(new MessageResponse("success", "Ticket release process started."), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error while releasing tickets: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            // Return structured error response for exception
+            return new ResponseEntity<>(new MessageResponse("error", "Error while releasing tickets: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/count-available")
     public ResponseEntity<Integer> getCountTickets() {

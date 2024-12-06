@@ -1,1 +1,68 @@
-<p>vendor-release works!</p>
+<div class="ticket-release-container">
+  <h2>Release Tickets</h2>
+
+  <form #ticketReleaseForm="ngForm" (ngSubmit)="onSubmit(ticketReleaseForm)" class="ticket-release-form">
+    
+    <!-- Tickets Per Release -->
+    <div class="form-group">
+      <label for="ticketsPerRelease">Tickets Per Release</label>
+      <input
+        type="number"
+        id="ticketsPerRelease"
+        name="ticketsPerRelease"
+        [(ngModel)]="ticketRelease.ticketsPerRelease"
+        #ticketsPerRelease="ngModel"
+        required
+        min="1"
+        class="form-control"
+      />
+      <div *ngIf="ticketsPerRelease.invalid && ticketsPerRelease.touched" class="error-message">
+        Please enter a valid number of tickets (greater than 0).
+      </div>
+    </div>
+
+    <!-- Ticket Price -->
+    <div class="form-group">
+      <label for="ticketPrice">Ticket Price</label>
+      <input
+        type="number"
+        id="ticketPrice"
+        name="ticketPrice"
+        [(ngModel)]="ticketRelease.ticketPrice"
+        #ticketPrice="ngModel"
+        required
+        min="0.01"
+        class="form-control"
+      />
+      <div *ngIf="ticketPrice.invalid && ticketPrice.touched" class="error-message">
+        Please enter a valid ticket price (greater than 0).
+      </div>
+    </div>
+
+    <!-- Ticket Type -->
+    <div class="form-group">
+      <label for="ticketType">Ticket Type</label>
+      <input
+        type="text"
+        id="ticketType"
+        name="ticketType"
+        [(ngModel)]="ticketRelease.ticketType"
+        #ticketType="ngModel"
+        required
+        class="form-control"
+      />
+      <div *ngIf="ticketType.invalid && ticketType.touched" class="error-message">
+        Ticket type cannot be empty.
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary" [disabled]="ticketReleaseForm.invalid">Submit</button>
+  </form>
+</div>
+
+

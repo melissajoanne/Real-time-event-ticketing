@@ -2,11 +2,15 @@ import { isPlatformBrowser } from '@angular/common';
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';  // Import Router for navigation
 import { HttpClientModule, HttpClient } from '@angular/common/http'; 
+import { FormsModule } from '@angular/forms';
+import { NgModule } from '@angular/core';
+
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-customer-buy',
   standalone: true,
-  imports: [RouterOutlet,HttpClientModule],  // Standalone components don't need the RouterModule here
+  imports: [RouterOutlet,HttpClientModule,FormsModule],  // Standalone components don't need the RouterModule here
   templateUrl: './customer-buy.component.html',
   styleUrls: ['./customer-buy.component.css']
 })
@@ -16,6 +20,7 @@ export class CustomerBuyComponent {
   errorMessage: string = '';
   ticket: any = {};  // Assuming ticket object is defined
   customerId: string = '';
+paymentDetails: any;
 
   constructor(
     private http: HttpClient,
@@ -80,6 +85,7 @@ export class CustomerBuyComponent {
     this.router.navigate(['/user-selection']);
   }
 }
+
 
 
 
