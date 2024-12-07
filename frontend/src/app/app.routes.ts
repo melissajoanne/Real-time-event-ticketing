@@ -5,6 +5,8 @@ import { CustomerFormComponent } from './Components/customer-form/customer-form.
 import { CustomerBuyComponent } from './Components/customer-buy/customer-buy.component';
 import { CustomerReserveComponent } from './Components/customer-reserve/customer-reserve.component';
 import { VendorReleaseComponent } from './Components/vendor-release/vendor-release.component';
+import { AppComponent } from './app.component';
+
 
 
 export const routes: Routes = [
@@ -14,6 +16,8 @@ export const routes: Routes = [
     {path:'customer-form', component: CustomerFormComponent },
     {path:'customer-reserve',component:CustomerReserveComponent},
     {path:'customer-buy',component:CustomerBuyComponent},
-    {path:'vendor-release',component:VendorReleaseComponent}
+    {path:'vendor-release',component:VendorReleaseComponent},
+    
+    
 
 ];

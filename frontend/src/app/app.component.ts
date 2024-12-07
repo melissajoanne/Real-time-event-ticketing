@@ -3,20 +3,19 @@ import { RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';  // Import CommonModule if needed for ngIf, ngFor, etc.
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';  // Import Router
-
+import { Router } from '@angular/router';  // Import Router for navigation
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, HttpClientModule],
+  imports: [RouterOutlet, CommonModule, HttpClientModule],  // Removed TicketCountComponent from here
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   constructor(private http: HttpClient, private router: Router) {}
+
   title = 'RealTimeFrontEndAngular';
 
   ngOnInit() {
@@ -36,8 +35,7 @@ export class AppComponent {
   }
 
   goToAbout() {
-    this.router.navigate(['/user-selection']);  // Navigate to About page
+    this.router.navigate(['/user-selection']);  // Navigate to the user selection page
   }
 }
-
 

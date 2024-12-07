@@ -13,16 +13,8 @@ public class Ticket {
     private String status;
     private Long vendorId;
     private Long customerId;
-    private Long eventId;
 
 
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
 
     public Long getCustomerId() {
         return customerId;

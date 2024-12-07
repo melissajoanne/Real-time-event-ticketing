@@ -1,28 +1,18 @@
 package lk.ac.iit.RealTimeEventTicketing.Service;
 
-import jakarta.transaction.Transactional;
-import lk.ac.iit.RealTimeEventTicketing.Config;
 import lk.ac.iit.RealTimeEventTicketing.ConfigLoader;
-import lk.ac.iit.RealTimeEventTicketing.TicketPool;
-import lk.ac.iit.RealTimeEventTicketing.model.Customer;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.repo.CustomerRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.LinkedList;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 //@Service
@@ -213,11 +203,7 @@ import java.util.stream.Collectors;
 //
 //}
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.concurrent.TimeUnit;
+
 @Service
 public class TicketPoolService {
 

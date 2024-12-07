@@ -149,7 +149,7 @@ export class CustomerBuyComponent {
         },
         error: (error) => {
           console.error('Error purchasing ticket:', error);
-          this.errorMessage = `Error purchasing ticket: ${error.message || 'Unknown error'}`;
+          this.errorMessage = `Session Time Out, Error purchasing ticket: ${error.message || 'Unknown error'}`;
           this.successMessage = '';  // Reset success message
         }
       });

@@ -52,20 +52,21 @@ public ResponseEntity<Customer> getCustomerById(@PathVariable Long customerId) {
 @PostMapping("/add")
 //@CrossOrigin(origins = "http://localhost:4200")
 public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
-        log.info("In customer controller");
-        log.info("Customer: " + customer.toString());
+//        log.info("In customer controller");
+//        log.info("Customer: " + customer.toString());
         String responseMessage = null;
+        
 
         try {
             Customer newCustomer = customerService.addCustomer(customer);
-            responseMessage = "Your customer ID is: [" + newCustomer.getCustomerId() + "]. Please use this ID when you book tickets.";
+            responseMessage = "Your customer ID is: [" + newCustomer.getCustomerId() + "] Customer added";
 
         } catch (Exception e) {
             log.info(e.getMessage());
         }
 
     return ResponseEntity.status(HttpStatus.CREATED)
-            .body("{ \"message\": \"Customer " +responseMessage+ "successfully\" }");
+            .body("{ \"message\": \"Customer " +responseMessage+ " successfully\" }");
     }
 //@PostMapping("/addCustomer")
 //public ResponseEntity<Map<String, Object>> addCustomer(@RequestBody Customer customer) {
