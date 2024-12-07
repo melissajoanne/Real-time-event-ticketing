@@ -209,6 +209,7 @@ public class TicketController {
     public ResponseEntity<Integer> countAvailableTickets() {
         try {
             int availableTickets = ticketPoolService.countAvailableTickets();
+            ticketPoolService.broadcastTicketCount(availableTickets);
             return ResponseEntity.ok(availableTickets);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

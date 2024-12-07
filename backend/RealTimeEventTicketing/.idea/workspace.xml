@@ -5,11 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2b0b2c38-c767-479f-a314-113cecb03caf" name="Changes" comment="updated">
-      <change afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/dto/MessageResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/WebSocketConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Controllers/TicketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Controllers/TicketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Service/TicketPoolService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Service/TicketPoolService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/WebConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../frontend/src/app/Components/vendor-release/vendor-release.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/Components/vendor-release/vendor-release.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../frontend/src/app/Components/vendor-release/vendor-release.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/Components/vendor-release/vendor-release.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/app.component.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -163,7 +169,7 @@
       <workItem from="1732762577298" duration="91621000" />
       <workItem from="1733123990926" duration="7000" />
       <workItem from="1733124293724" duration="27850000" />
-      <workItem from="1733450073962" duration="34172000" />
+      <workItem from="1733450073962" duration="41791000" />
     </task>
     <task id="LOCAL-00001" summary="Completed CRUD">
       <option name="closed" value="true" />

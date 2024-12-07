@@ -8,6 +8,7 @@ import lk.ac.iit.RealTimeEventTicketing.model.Customer;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.repo.CustomerRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -225,12 +226,14 @@ public class TicketPoolService {
     private final ConcurrentLinkedQueue<Ticket> ticketPool = new ConcurrentLinkedQueue<>(); // Changed to ConcurrentLinkedQueue
     private final ConcurrentHashMap<Long, ReentrantLock> reservationLocks = new ConcurrentHashMap<>();
     private final CustomerRepo customerRepo;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public TicketPoolService(TicketRepo ticketRepo, ConfigLoader configLoader, CustomerRepo customerRepo) {
+    public TicketPoolService(TicketRepo ticketRepo, ConfigLoader configLoader, CustomerRepo customerRepo, SimpMessagingTemplate messagingTemplate) {
         this.ticketRepo = ticketRepo;
         this.customerRepo = customerRepo;
         this.MAX_POOL_SIZE = configLoader.getAppConfig().getMaxTicketCapacity();
+        this.messagingTemplate = messagingTemplate;
     }
 
     // Add tickets to the pool (Producer)
@@ -271,6 +274,9 @@ public class TicketPoolService {
             response.put("tickets", availableTickets);
         }
         return response;
+    }
+    public void broadcastTicketCount(int availableTickets) {
+        messagingTemplate.convertAndSend("/topic/ticket-count", availableTickets);
     }
 
     // Reserve the next available ticket
