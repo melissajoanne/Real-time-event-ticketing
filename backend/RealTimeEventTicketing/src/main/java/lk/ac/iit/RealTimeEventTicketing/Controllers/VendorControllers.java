@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static lk.ac.iit.RealTimeEventTicketing.Service.VendorService.HARDCODED_EVENTS;
 
 @RestController
 @RequestMapping("/vendor")
@@ -43,10 +42,8 @@ public class VendorControllers {
         this.config = config;
     }
 
-    @GetMapping("/events")
-    public ResponseEntity<List<String>> getAvailableEvents() {
-        return ResponseEntity.ok(HARDCODED_EVENTS);
-    }
+
+
     @GetMapping("/all")
     public ResponseEntity<List<Vendor>> getAllVendors() {
         List<Vendor> vendors = vendorService.findAllVendors();
@@ -59,44 +56,35 @@ public class VendorControllers {
         return new ResponseEntity<>(vendor, HttpStatus.OK);
     }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<String> addVendor(@RequestBody Vendor vendor) {
-//        logger.info("In vendor controller");
-//        logger.info("Vendor: " + vendor.toString());
-//        String responseMessage = null;
-//
-//        try {
-//            Vendor newVendor = vendorService.addVendor(vendor);
-//            responseMessage = "Your vendor ID is: [" + newVendor.getVendorId() + "]. Please use this ID when you add tickets.";
-//            return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
-//        } catch (Exception e) {
-//            logger.info(e.getMessage());
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body("{ \"message\": \"Vendor" +responseMessage+ "successfully\" }");
-//        Vendor newVendor = vendorService.addVendor(vendor);
-//        String responseMessage = "Your vendor ID is: " + newVendor.getVendorId() + ". Please use this ID when you add tickets.";
-//        return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
 
 @PostMapping("/add")
 public ResponseEntity<VendorResponseDto> addVendor(@RequestBody Vendor vendor) {
-    logger.info("In vendor controller");
-    logger.info("Vendor: " + vendor.toString());
+//    logger.info("In vendor controller");
+//    logger.info("Vendor: " + vendor.toString());
+
 
     try {
+        if (vendor.getName()==null || vendor.getName().isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new VendorResponseDto("Vendor not added. Please provide all the required fields", null));
+
+        }
+        if (vendor.getEmail()==null || vendor.getEmail().isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new VendorResponseDto("Vendor not added. Please provide all the required fields", null));
+
+        }
         Vendor newVendor = vendorService.addVendor(vendor);
-        String responseMessage = "Your vendor ID is: " + newVendor.getVendorId() + ". Please use this ID when you add tickets.";
+        String responseMessage = "Vendor added successfully with vendor ID: " + newVendor.getVendorId();
 
-        // Create a response DTO object
+        // response DTO object
         VendorResponseDto response = new VendorResponseDto(responseMessage, Math.toIntExact(newVendor.getVendorId()));
-
-        // Return the response as JSON
+        System.out.println("Vendor added");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+
     } catch (Exception e) {
         logger.error("Error occurred while adding vendor: " + e.getMessage());
 
-        // Return an error response in case of an exception
         VendorResponseDto errorResponse = new VendorResponseDto("An error occurred while adding the vendor. Please try again later.", null);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }

@@ -1,5 +1,6 @@
 package lk.ac.iit.RealTimeEventTicketing.Service;
 
+import lk.ac.iit.RealTimeEventTicketing.Config;
 import lk.ac.iit.RealTimeEventTicketing.ConfigLoader;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.repo.CustomerRepo;
@@ -213,13 +214,16 @@ public class TicketPoolService {
     private final ConcurrentHashMap<Long, ReentrantLock> reservationLocks = new ConcurrentHashMap<>();
     private final CustomerRepo customerRepo;
     private final SimpMessagingTemplate messagingTemplate;
+    private final Config appConfig;
+    private final Map<Long, Long> customerReservationTimestamps = new ConcurrentHashMap<>();
 
     @Autowired
-    public TicketPoolService(TicketRepo ticketRepo, ConfigLoader configLoader, CustomerRepo customerRepo, SimpMessagingTemplate messagingTemplate) {
+    public TicketPoolService(TicketRepo ticketRepo, ConfigLoader configLoader, CustomerRepo customerRepo, SimpMessagingTemplate messagingTemplate, Config appConfig) {
         this.ticketRepo = ticketRepo;
         this.customerRepo = customerRepo;
         this.MAX_POOL_SIZE = configLoader.getAppConfig().getMaxTicketCapacity();
         this.messagingTemplate = messagingTemplate;
+        this.appConfig = appConfig;
     }
 
     // Add tickets to the pool (Producer)
@@ -266,9 +270,60 @@ public class TicketPoolService {
     }
 
     // Reserve the next available ticket
+//    public Ticket reserveNextAvailableTicket(Long customerId) {
+//        if (!customerExists(customerId)) {
+//            throw new IllegalStateException("Invalid customer ID: " + customerId);
+//        }
+//
+//        Ticket ticket = ticketPool.stream()
+//                .filter(t -> "Available".equals(t.getStatus()))
+//                .findFirst()
+//                .orElseThrow(() -> new IllegalStateException("No tickets available at the moment."));
+//
+//        ReentrantLock lock = reservationLocks.get(ticket.getTicketId());
+//        lock.lock();
+//        try {
+//            if (!"Available".equals(ticket.getStatus())) {
+//                throw new IllegalStateException("Ticket " + ticket.getTicketId() + " is no longer available.");
+//            }
+//
+//            ticket.setStatus("Reserved");
+//            ticket.setCustomerId(customerId);
+//            System.out.println("Ticket " + ticket.getTicketId() + " reserved for customer " + customerId);
+//
+//            new Thread(() -> {
+//                try {
+//                    TimeUnit.MINUTES.sleep(1);
+//                    synchronized (ticket) {
+//                        if ("Reserved".equals(ticket.getStatus())) {
+//                            ticket.setStatus("Available");
+//                            ticket.setCustomerId(null);
+//                            System.out.println("Ticket " + ticket.getTicketId() + " reservation expired.");
+//                        }
+//                    }
+//                } catch (InterruptedException e) {
+//                    Thread.currentThread().interrupt();
+//                }
+//            }).start();
+//
+//            return ticket;
+//        } finally {
+//            lock.unlock();
+//        }
+//    }
     public Ticket reserveNextAvailableTicket(Long customerId) {
         if (!customerExists(customerId)) {
             throw new IllegalStateException("Invalid customer ID: " + customerId);
+        }
+
+        // Fetch the interval dynamically from the configuration
+        long retrievalRate = appConfig.getCustomerRetrievalRate();
+
+        long currentTime = System.currentTimeMillis();
+        long lastReservationTime = customerReservationTimestamps.getOrDefault(customerId, 0L);
+
+        if (currentTime - lastReservationTime < retrievalRate) {
+            throw new IllegalStateException("Rate limit exceeded. Please wait before reserving another ticket.");
         }
 
         Ticket ticket = ticketPool.stream()
@@ -283,10 +338,16 @@ public class TicketPoolService {
                 throw new IllegalStateException("Ticket " + ticket.getTicketId() + " is no longer available.");
             }
 
+            // Update ticket status and customer
             ticket.setStatus("Reserved");
             ticket.setCustomerId(customerId);
+
+            // Update the last reservation time
+            customerReservationTimestamps.put(customerId, currentTime);
+
             System.out.println("Ticket " + ticket.getTicketId() + " reserved for customer " + customerId);
 
+            // Start reservation expiration thread
             new Thread(() -> {
                 try {
                     TimeUnit.MINUTES.sleep(1);

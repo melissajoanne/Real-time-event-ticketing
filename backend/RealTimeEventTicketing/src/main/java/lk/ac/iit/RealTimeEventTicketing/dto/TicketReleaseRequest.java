@@ -4,15 +4,7 @@ public class TicketReleaseRequest {
     private int ticketsPerRelease;
     private String ticketType;
     private double ticketPrice;
-    private int ticketReleaseInterval;
 
-    public int getTicketReleaseInterval() {
-        return ticketReleaseInterval;
-    }
-
-    public void setTicketReleaseInterval(int ticketReleaseInterval) {
-        this.ticketReleaseInterval = ticketReleaseInterval;
-    }
 
     // Getters and Setters
     public int getTicketsPerRelease() {

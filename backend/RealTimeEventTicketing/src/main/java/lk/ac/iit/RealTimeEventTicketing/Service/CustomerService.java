@@ -38,32 +38,9 @@ public class CustomerService {
         return customerRepo.findAll();
     }
 
-  public void deleteCustomer(Long customerId) {
+    public void deleteCustomer(Long customerId) {
         customerRepo.deleteById(customerId);
-  }
-    // Signup: create a new customer
-//    public Customer signup(String customerEmail, String customerName, String customerPhone) {
-//        // Check if the email already exists
-//        Optional<Customer> existingCustomer = customerRepo.findByCustomerEmail(customerEmail);
-//        if (existingCustomer.isPresent()) {
-//            throw new IllegalStateException("Email is already in use.");
-//        }
-//
-//        // Create new customer and save it
-//        Customer newCustomer = new Customer();
-//        newCustomer.setCustomerEmail(customerEmail);
-//        newCustomer.setCustomerName(customerName);
-//        newCustomer.setCustomerPhone(customerPhone);
-//
-//        return customerRepo.save(newCustomer);
-//    }
-//
-//    // Login: find customer by email
-//    public Customer login(String CustomerEmail) {
-//        return customerRepo.findByCustomerEmail(CustomerEmail)
-//                .orElseThrow(() -> new IllegalStateException("Email not found. Please sign up first."));
-//    }
+    }
 }
-
 
 
