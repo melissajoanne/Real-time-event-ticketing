@@ -142,7 +142,7 @@ export class VendorReleaseComponent implements OnInit {
 
           // Check if response status is success
           if (response.status === 'success') {
-            this.successMessage = 'Ticket release process is done' + response.message;
+            this.successMessage = response.message;
             this.errorMessage = '';
             
             // After 3 seconds, navigate to user-selection page

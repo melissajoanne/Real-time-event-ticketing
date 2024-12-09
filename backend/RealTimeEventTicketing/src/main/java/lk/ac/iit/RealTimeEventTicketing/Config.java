@@ -67,7 +67,7 @@ public class Config implements Serializable {
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(configLoader.getAppConfig().getTotalTickets());
         executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("vendorThread-");
+        executor.setThreadNamePrefix("Thread-");
         executor.initialize();
         return executor;
     }

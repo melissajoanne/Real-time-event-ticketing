@@ -23,16 +23,6 @@ public class ConfigLoader {
         this.appConfig = objectMapper.readValue(new File(filePath), Config.class);
     }
 
-//    @Bean(name="treadPool")
-//    public Executor taskExecutor() {
-//        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-//        executor.setCorePoolSize(2);
-//        executor.setMaxPoolSize(appConfig.getTotalTickets());
-//        executor.setQueueCapacity(appConfig.getMaxTicketCapacity());
-//        executor.setThreadNamePrefix("userThread-");
-//        executor.initialize();
-//        return executor;
-//    }
 
     public Config getAppConfig() {
         return appConfig;

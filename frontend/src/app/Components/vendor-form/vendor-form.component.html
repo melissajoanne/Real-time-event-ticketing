@@ -20,11 +20,11 @@
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input class="form-control" id="email" name="email" [(ngModel)]="vendor.email" type="email" required placeholder="Enter Email" #email="ngModel">
+                                <input class="form-control" type="email" id="email" name="email" [(ngModel)]="vendor.email" required email placeholder="Email" #email="ngModel">
                                 <!-- Email Validation Error Message -->
                                 <div *ngIf="email.invalid && email.touched" class="text-danger">
                                     <small *ngIf="email.errors?.['required']">Email is required.</small>
-                                    <small *ngIf="email.errors?.['email']">Please enter a valid email address.</small>
+                                    <small *ngIf="email.errors?.['email']">Please enter a valid email address.(e.g., user&#64;gmail.com)</small>
                                 </div>
                             </div>
 

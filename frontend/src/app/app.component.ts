@@ -87,32 +87,39 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router'
+import { TicketService } from './Services/ticket.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet,HttpClientModule],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [TicketService]
+  
 })
 export class AppComponent implements OnInit, OnDestroy {
+maxTicketCapacity: any;
   title(title: any) {
     throw new Error('Method not implemented.');
   }
   constructor(
     private http: HttpClient,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private ticketService: TicketService
   ) {}
 
   ticketCount: any;
   intervalId: any;
 
   ngOnInit() {
+    
     if (isPlatformBrowser(this.platformId)) {
       // Only start polling on the client-side
       this.startPolling();
     }
+    // this.maxTicketCapacity();
   }
 
   ngOnDestroy() {
@@ -144,4 +151,15 @@ export class AppComponent implements OnInit, OnDestroy {
   goToAbout() {
     this.router.navigate(['/user-selection']);
   }
+
+  // getMaxTicketCapacity() {
+  //   this.ticketService.getMaxTicketCapacity().subscribe(
+  //     (capacity: any) => {
+  //       this.maxTicketCapacity = capacity; // Update the max ticket capacity on success
+  //     },
+  //     (error: any) => {
+  //       console.error('Error fetching max ticket capacity', error); // Log any errors
+  //     }
+  //   );
+  // }
 }

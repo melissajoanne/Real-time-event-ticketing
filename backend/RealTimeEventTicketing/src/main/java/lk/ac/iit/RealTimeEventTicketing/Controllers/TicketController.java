@@ -1,5 +1,7 @@
 package lk.ac.iit.RealTimeEventTicketing.Controllers;
 
+import lk.ac.iit.RealTimeEventTicketing.Config;
+import lk.ac.iit.RealTimeEventTicketing.ConfigLoader;
 import lk.ac.iit.RealTimeEventTicketing.Service.TicketPoolService;
 import lk.ac.iit.RealTimeEventTicketing.Service.TicketService;
 import lk.ac.iit.RealTimeEventTicketing.dto.*;
@@ -30,6 +32,8 @@ public class TicketController {
     private TicketPurchaseRequest request;
     private TicketReserveRequest reserveRequest;
     private VendorRepo vendorRepo;
+    private ConfigLoader configLoader;
+    private Config appConfig;
 
     private Ticket ticket;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);  // Limit of 10 vendors
@@ -158,14 +162,25 @@ public class TicketController {
 
     }
 
-    @MessageMapping("/ticket")
-    @SendTo("/topic/ticketCount")
-    public String sendTicketCount() throws InterruptedException {
-        System.out.println("Sending ticket count");
-        // Here you can fetch the ticket count or any other data
-        int ticketCount = 123;  // Replace this with actual data fetching logic
-        return String.valueOf(ticketCount);
+    @GetMapping("/maxTicketCapacity")
+    public ResponseEntity<Integer> getMaxTicketCapacity() {
+        try {
+            int maxTicketCapacity = ticketPoolService.MAX_POOL_SIZE;
+            return ResponseEntity.ok(maxTicketCapacity);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
+
+//    @MessageMapping("/ticket")
+//    @SendTo("/topic/ticketCount")
+//    public String sendTicketCount() throws InterruptedException {
+//        System.out.println("Sending ticket count");
+//        // Here you can fetch the ticket count or any other data
+//        int ticketCount = 123;  // Replace this with actual data fetching logic
+//        return String.valueOf(ticketCount);
+//    }
 }
 
 

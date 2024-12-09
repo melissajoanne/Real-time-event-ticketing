@@ -5,6 +5,7 @@ import lk.ac.iit.RealTimeEventTicketing.ConfigLoader;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.repo.CustomerRepo;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
+import org.junit.Test;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -209,7 +210,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TicketPoolService {
 
     private final TicketRepo ticketRepo;
-    private final int MAX_POOL_SIZE;
+    public final int MAX_POOL_SIZE;
     private final ConcurrentLinkedQueue<Ticket> ticketPool = new ConcurrentLinkedQueue<>(); // Changed to ConcurrentLinkedQueue
     private final ConcurrentHashMap<Long, ReentrantLock> reservationLocks = new ConcurrentHashMap<>();
     private final CustomerRepo customerRepo;
@@ -227,6 +228,7 @@ public class TicketPoolService {
     }
 
     // Add tickets to the pool (Producer)
+
     public void addTicketToPool(Ticket ticket) {
         synchronized (this) {
             while (ticketPool.size() >= MAX_POOL_SIZE) {
@@ -260,14 +262,14 @@ public class TicketPoolService {
             response.put("message", "No tickets are currently available.");
             response.put("tickets", Collections.emptyList());
         } else {
-            response.put("message", "Available tickets found.");
+            response.put("message", "Tickets are available.");
             response.put("tickets", availableTickets);
         }
         return response;
     }
-    public void broadcastTicketCount(int availableTickets) {
-        messagingTemplate.convertAndSend("/topic/ticket-count", availableTickets);
-    }
+//    public void broadcastTicketCount(int availableTickets) {
+//        messagingTemplate.convertAndSend("/topic/ticket-count", availableTickets);
+//    }
 
     // Reserve the next available ticket
 //    public Ticket reserveNextAvailableTicket(Long customerId) {
@@ -405,6 +407,7 @@ public class TicketPoolService {
     private boolean customerExists(Long customerId) {
         return customerRepo.existsById(customerId);
     }
+
 }
 
 
