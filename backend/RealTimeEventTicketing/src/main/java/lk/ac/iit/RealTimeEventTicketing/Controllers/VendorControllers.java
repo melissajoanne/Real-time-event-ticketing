@@ -59,9 +59,6 @@ public class VendorControllers {
 
 @PostMapping("/add")
 public ResponseEntity<VendorResponseDto> addVendor(@RequestBody Vendor vendor) {
-//    logger.info("In vendor controller");
-//    logger.info("Vendor: " + vendor.toString());
-
 
     try {
         if (vendor.getName()==null || vendor.getName().isEmpty()){

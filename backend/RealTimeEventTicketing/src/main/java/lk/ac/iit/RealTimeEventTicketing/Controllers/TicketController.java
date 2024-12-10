@@ -172,15 +172,12 @@ public class TicketController {
                     .body(null);
         }
     }
+    @GetMapping("/all")
+    public ResponseEntity<List<Ticket>> findAllTickets() {
+        return new ResponseEntity<>(ticketService.findAllTickets(), HttpStatus.OK);
+    }
 
-//    @MessageMapping("/ticket")
-//    @SendTo("/topic/ticketCount")
-//    public String sendTicketCount() throws InterruptedException {
-//        System.out.println("Sending ticket count");
-//        // Here you can fetch the ticket count or any other data
-//        int ticketCount = 123;  // Replace this with actual data fetching logic
-//        return String.valueOf(ticketCount);
-//    }
+
 }
 
 

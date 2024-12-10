@@ -47,8 +47,6 @@ public ResponseEntity<Customer> getCustomerById(@PathVariable Long customerId) {
 @PostMapping("/add")
 //@CrossOrigin(origins = "http://localhost:4200")
 public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
-//        log.info("In customer controller");
-//        log.info("Customer: " + customer.toString());
         String responseMessage = null;
 
 

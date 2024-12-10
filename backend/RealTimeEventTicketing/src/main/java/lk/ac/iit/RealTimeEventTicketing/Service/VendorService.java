@@ -18,9 +18,6 @@ public class VendorService {
     @Autowired
     private VendorRepo vendorRepo;
 
-
-
-
     private static final Logger logger=(Logger) LoggerFactory.getLogger(VendorService.class);
 
     public VendorService(Config config) {

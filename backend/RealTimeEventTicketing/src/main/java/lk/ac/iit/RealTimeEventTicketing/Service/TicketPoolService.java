@@ -267,52 +267,6 @@ public class TicketPoolService {
         }
         return response;
     }
-//    public void broadcastTicketCount(int availableTickets) {
-//        messagingTemplate.convertAndSend("/topic/ticket-count", availableTickets);
-//    }
-
-    // Reserve the next available ticket
-//    public Ticket reserveNextAvailableTicket(Long customerId) {
-//        if (!customerExists(customerId)) {
-//            throw new IllegalStateException("Invalid customer ID: " + customerId);
-//        }
-//
-//        Ticket ticket = ticketPool.stream()
-//                .filter(t -> "Available".equals(t.getStatus()))
-//                .findFirst()
-//                .orElseThrow(() -> new IllegalStateException("No tickets available at the moment."));
-//
-//        ReentrantLock lock = reservationLocks.get(ticket.getTicketId());
-//        lock.lock();
-//        try {
-//            if (!"Available".equals(ticket.getStatus())) {
-//                throw new IllegalStateException("Ticket " + ticket.getTicketId() + " is no longer available.");
-//            }
-//
-//            ticket.setStatus("Reserved");
-//            ticket.setCustomerId(customerId);
-//            System.out.println("Ticket " + ticket.getTicketId() + " reserved for customer " + customerId);
-//
-//            new Thread(() -> {
-//                try {
-//                    TimeUnit.MINUTES.sleep(1);
-//                    synchronized (ticket) {
-//                        if ("Reserved".equals(ticket.getStatus())) {
-//                            ticket.setStatus("Available");
-//                            ticket.setCustomerId(null);
-//                            System.out.println("Ticket " + ticket.getTicketId() + " reservation expired.");
-//                        }
-//                    }
-//                } catch (InterruptedException e) {
-//                    Thread.currentThread().interrupt();
-//                }
-//            }).start();
-//
-//            return ticket;
-//        } finally {
-//            lock.unlock();
-//        }
-//    }
     public Ticket reserveNextAvailableTicket(Long customerId) {
         if (!customerExists(customerId)) {
             throw new IllegalStateException("Invalid customer ID: " + customerId);
@@ -393,8 +347,6 @@ public class TicketPoolService {
             notifyAll();
         }
     }
-
-
 
     // Count available tickets
     public int countAvailableTickets() {
