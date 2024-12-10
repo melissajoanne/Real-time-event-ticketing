@@ -1,4 +1,5 @@
 /* Navbar Styling */
+
 .navbar {
     color: var(--bs-navbar-active-color);
     text-shadow: 0px 0px;
@@ -65,4 +66,5 @@
       margin: 0.5rem 0;
     }
   }
+  
   

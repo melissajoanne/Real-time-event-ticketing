@@ -14,6 +14,7 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrl: './customer-reserve.component.css'
 })
 export class CustomerReserveComponent {
+  imageName= 'tt.jpg';
 
   successMessage: string = '';
   errorMessage: string = '';

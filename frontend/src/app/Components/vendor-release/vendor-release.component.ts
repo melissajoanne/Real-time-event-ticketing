@@ -111,7 +111,7 @@ export class VendorReleaseComponent implements OnInit {
     if (!this.vendorId) {
       this.errorMessage = 'Vendor ID not found. Redirecting to login...';
       console.error(this.errorMessage);
-      setTimeout(() => this.router.navigate(['/login']), 3000);
+      setTimeout(() => this.router.navigate(['/user-selection']), 3000);
     }
   }
 

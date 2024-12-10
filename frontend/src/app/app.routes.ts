@@ -6,6 +6,8 @@ import { CustomerBuyComponent } from './Components/customer-buy/customer-buy.com
 import { CustomerReserveComponent } from './Components/customer-reserve/customer-reserve.component';
 import { VendorReleaseComponent } from './Components/vendor-release/vendor-release.component';
 import { AppComponent } from './app.component';
+import { AdminComponent } from './admin/admin.component';
+
 
 
 
@@ -18,6 +20,8 @@ export const routes: Routes = [
     {path:'customer-reserve',component:CustomerReserveComponent},
     {path:'customer-buy',component:CustomerBuyComponent},
     {path:'vendor-release',component:VendorReleaseComponent},
+    {path:'admin',component:AdminComponent}
+   
    
     
     
