@@ -9,12 +9,13 @@
 
                             <!-- Vendor Registration Form -->
                             <div class="mb-3">
-                                <label for="name" class="form-label">Vendor Name</label>
-                                <input class="form-control" id="name" name="name" [(ngModel)]="vendor.name" required minlength="3" placeholder="Enter Vendor Name" #name="ngModel">
+                                <label for="name" class="form-label">Enter your Name</label>
+                                <input class="form-control" id="name" name="name" [(ngModel)]="vendor.name"pattern="^[a-zA-Z\s]*$" required minlength="3" placeholder="Enter your Name" #name="ngModel">
                                 <!-- Name Validation Error Message -->
                                 <div *ngIf="name.invalid && name.touched" class="text-danger">
                                     <small *ngIf="name.errors?.['required']">Vendor name is required.</small>
                                     <small *ngIf="name.errors?.['minlength']">Vendor name must be at least 3 characters long.</small>
+                                    <small *ngIf="name.errors?.['pattern']">Vendor name must only contain letters.</small>
                                 </div>
                             </div>
 
@@ -27,6 +28,8 @@
                                     <small *ngIf="email.errors?.['email']">Please enter a valid email address.(e.g., user&#64;gmail.com)</small>
                                 </div>
                             </div>
+                            
+
 
                             <!-- Error and Success Messages -->
                             <div *ngIf="errorMessage" class="alert alert-danger">

@@ -1,17 +1,5 @@
 
   
-  <!-- Start: Banner -->
-  <section class="py-4 py-xl-5">
-    <div class="container py-4 py-xl-5">
-      <div class="row mb-5">
-        <div class="col-md-8 col-xl-6 text-center mx-auto">
-          <h2>Buy Tickets</h2>
-          <p class="w-lg-50">You can buy your tickets after filling this form</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- End: Banner -->
   
   <!-- Start: Customer Form -->
 <section class="position-relative py-4 py-xl-5">
@@ -36,16 +24,19 @@
                 
                 <!-- Name Input -->
                 <div class="mb-3">
-                  <input class="form-control" type="text" id="name" name="name" [(ngModel)]="customer.name" required minlength="3" placeholder="Name" #name="ngModel">
+                  <label for="name" class="form-label">Enter your Name</label>
+                  <input class="form-control" type="text" id="name" name="Enter your Name" pattern="^[a-zA-Z\s]*$"[(ngModel)]="customer.name" required minlength="3" placeholder="Enter your name" #name="ngModel">
                   <!-- Display error message if the name is not filled out -->
                   <div *ngIf="name.invalid && name.touched" class="text-danger">
                     <small *ngIf="name.errors?.['required']">Name is required.</small>
                     <small *ngIf="name.errors?.['minlength']">Name must be at least 3 characters long.</small>
+                    <small *ngIf="name.errors?.['pattern']">Vendor name must only contain letters.</small>
                   </div>
                 </div>
   
                 <!-- Email Input -->
                 <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
                   <input class="form-control" type="email" id="email" name="email" [(ngModel)]="customer.email" required email placeholder="Email" #email="ngModel">
                   <!-- Display error message if email is not filled out or not valid -->
                   <div *ngIf="email.invalid && email.touched" class="text-danger">

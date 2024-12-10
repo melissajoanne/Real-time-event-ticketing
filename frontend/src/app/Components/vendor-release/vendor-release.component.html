@@ -17,7 +17,7 @@
           class="form-control"
         />
         <div *ngIf="ticketsPerRelease.invalid && ticketsPerRelease.touched" class="error-message">
-          Please enter a valid number of tickets (greater than 0).
+          <small>Please enter a valid number of tickets (greater than 0).</small>
         </div>
       </div>
   
@@ -35,7 +35,9 @@
           class="form-control"
         />
         <div *ngIf="ticketPrice.invalid && ticketPrice.touched" class="error-message">
-          Please enter a valid ticket price (greater than 0).
+    
+          <small>Please enter a valid ticket price (greater than 0).</small>
+
         </div>
       </div>
   

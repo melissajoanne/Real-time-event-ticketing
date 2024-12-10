@@ -132,7 +132,7 @@ export class CustomerBuyComponent {
         paymentDetails: this.paymentDetails
       };
 
-      console.log('Reserving ticket with customer ID:', storedCustomerId);
+      console.log('Purchasing ticket with customer ID:', storedCustomerId);
 
       const headers = { 'X-Customer-Id': storedCustomerId };
 

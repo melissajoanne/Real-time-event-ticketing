@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 
 
 
+
 export const routes: Routes = [
     { path: '', component: UserSelectionComponent },
     { path: 'user-selection', component: UserSelectionComponent },
@@ -17,6 +18,7 @@ export const routes: Routes = [
     {path:'customer-reserve',component:CustomerReserveComponent},
     {path:'customer-buy',component:CustomerBuyComponent},
     {path:'vendor-release',component:VendorReleaseComponent},
+   
     
     
 

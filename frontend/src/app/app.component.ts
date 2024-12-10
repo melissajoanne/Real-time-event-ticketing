@@ -87,7 +87,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router'
-import { TicketService } from './Services/ticket.service';
+
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -95,11 +96,12 @@ import { TicketService } from './Services/ticket.service';
   imports: [RouterOutlet,HttpClientModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [TicketService]
+ 
   
 })
 export class AppComponent implements OnInit, OnDestroy {
 maxTicketCapacity: any;
+capacity: any;
   title(title: any) {
     throw new Error('Method not implemented.');
   }
@@ -107,7 +109,7 @@ maxTicketCapacity: any;
     private http: HttpClient,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private ticketService: TicketService
+  
   ) {}
 
   ticketCount: any;
@@ -119,8 +121,11 @@ maxTicketCapacity: any;
       // Only start polling on the client-side
       this.startPolling();
     }
-    // this.maxTicketCapacity();
-  }
+  //   this.getmaxTicketCapacity();
+  // }
+  // getmaxTicketCapacity() {
+  //   throw new Error('Method not implemented.');
+   }
 
   ngOnDestroy() {
     if (this.intervalId) {
@@ -153,13 +158,16 @@ maxTicketCapacity: any;
   }
 
   // getMaxTicketCapacity() {
-  //   this.ticketService.getMaxTicketCapacity().subscribe(
+  //   this.ticketService.getMaxTicketCapacity().pipe(
+  //     catchError(error => {
+  //       console.error('Error fetching max ticket capacity', error);
+  //       return of(null); // Return a default value or handle the error appropriately
+  //     })
+  //   ).subscribe(
   //     (capacity: any) => {
   //       this.maxTicketCapacity = capacity; // Update the max ticket capacity on success
-  //     },
-  //     (error: any) => {
-  //       console.error('Error fetching max ticket capacity', error); // Log any errors
   //     }
   //   );
   // }
+
 }

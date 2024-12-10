@@ -6,16 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="2b0b2c38-c767-479f-a314-113cecb03caf" name="Changes" comment="updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/ConfigLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/ConfigLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Controllers/TicketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Controllers/TicketController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Service/TicketPoolService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Service/TicketPoolService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Service/TicketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/Service/TicketService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/model/Vendor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/model/Vendor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/ticketSystemConfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lk/ac/iit/RealTimeEventTicketing/ticketSystemConfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../frontend/src/app/Components/customer-reserve/customer-reserve.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/Components/customer-reserve/customer-reserve.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/src/app/Components/vendor-release/vendor-release.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/Components/vendor-release/vendor-release.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/src/app/Components/vendor-release/vendor-release.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/Components/vendor-release/vendor-release.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/src/app/Services/ticket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/Services/ticket.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../frontend/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/app.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../frontend/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/app.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/src/app/app.routes.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,8 +26,8 @@
       <list>
         <option value="Enum" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="AnnotationType" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -169,7 +168,8 @@
       <workItem from="1732762577298" duration="91621000" />
       <workItem from="1733123990926" duration="7000" />
       <workItem from="1733124293724" duration="27850000" />
-      <workItem from="1733450073962" duration="109948000" />
+      <workItem from="1733450073962" duration="122244000" />
+      <workItem from="1733764202172" duration="32462000" />
     </task>
     <task id="LOCAL-00001" summary="Completed CRUD">
       <option name="closed" value="true" />
