@@ -1,14 +1,14 @@
 
 package lk.ac.iit.RealTimeEventTicketing;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.concurrent.Executor;
 
 
@@ -71,5 +71,6 @@ public class Config implements Serializable {
         executor.initialize();
         return executor;
     }
+
 }
 

@@ -43,7 +43,6 @@ public class VendorControllers {
     }
 
 
-
     @GetMapping("/all")
     public ResponseEntity<List<Vendor>> getAllVendors() {
         List<Vendor> vendors = vendorService.findAllVendors();
@@ -57,38 +56,36 @@ public class VendorControllers {
     }
 
 
-@PostMapping("/add")
-public ResponseEntity<VendorResponseDto> addVendor(@RequestBody Vendor vendor) {
+    @PostMapping("/add")
+    public ResponseEntity<VendorResponseDto> addVendor(@RequestBody Vendor vendor) {
 
-    try {
-        if (vendor.getName()==null || vendor.getName().isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new VendorResponseDto("Vendor not added. Please provide all the required fields", null));
+        try {
+            if (vendor.getName() == null || vendor.getName().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new VendorResponseDto("Vendor not added. Please provide all the required fields", null));
 
+            }
+            if (vendor.getEmail() == null || vendor.getEmail().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new VendorResponseDto("Vendor not added. Please provide all the required fields", null));
+
+            }
+            Vendor newVendor = vendorService.addVendor(vendor);
+            String responseMessage = "Vendor added successfully with vendor ID: " + newVendor.getVendorId();
+
+            // response DTO object
+            VendorResponseDto response = new VendorResponseDto(responseMessage, Math.toIntExact(newVendor.getVendorId()));
+            System.out.println("Vendor added");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            logger.error("Error occurred while adding vendor: " + e.getMessage());
+
+            VendorResponseDto errorResponse = new VendorResponseDto("An error occurred while adding the vendor. Please try again later.", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
-        if (vendor.getEmail()==null || vendor.getEmail().isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new VendorResponseDto("Vendor not added. Please provide all the required fields", null));
-
-        }
-        Vendor newVendor = vendorService.addVendor(vendor);
-        String responseMessage = "Vendor added successfully with vendor ID: " + newVendor.getVendorId();
-
-        // response DTO object
-        VendorResponseDto response = new VendorResponseDto(responseMessage, Math.toIntExact(newVendor.getVendorId()));
-        System.out.println("Vendor added");
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-
-    } catch (Exception e) {
-        logger.error("Error occurred while adding vendor: " + e.getMessage());
-
-        VendorResponseDto errorResponse = new VendorResponseDto("An error occurred while adding the vendor. Please try again later.", null);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
-}
 
 
-@PutMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<Vendor> updateVendor(@RequestBody Vendor vendor) {
         Vendor updatedVendor = vendorService.updateVendor(vendor);
         return new ResponseEntity<>(updatedVendor, HttpStatus.OK);

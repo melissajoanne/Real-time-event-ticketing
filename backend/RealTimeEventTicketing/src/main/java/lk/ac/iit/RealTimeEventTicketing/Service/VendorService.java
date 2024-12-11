@@ -1,4 +1,5 @@
 package lk.ac.iit.RealTimeEventTicketing.Service;
+
 import lk.ac.iit.RealTimeEventTicketing.Config;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
 import lk.ac.iit.RealTimeEventTicketing.repo.VendorRepo;
@@ -18,7 +19,7 @@ public class VendorService {
     @Autowired
     private VendorRepo vendorRepo;
 
-    private static final Logger logger=(Logger) LoggerFactory.getLogger(VendorService.class);
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(VendorService.class);
 
     public VendorService(Config config) {
         this.config = config;
@@ -35,15 +36,15 @@ public class VendorService {
     public Vendor findVendorById(Long VendorId) {
         return vendorRepo.findById(VendorId).orElse(null);
     }
+
     public List<Vendor> findAllVendors() {
         return vendorRepo.findAll();
     }
 
-   public void deleteVendorById(Long VendorId) {
+    public void deleteVendorById(Long VendorId) {
         vendorRepo.deleteById(VendorId);
-   }
-
-
-
     }
+
+
+}
 

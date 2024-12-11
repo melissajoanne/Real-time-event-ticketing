@@ -29,34 +29,32 @@ public class CustomerControllers {
         this.customerService = customerService;
     }
 
-
     @GetMapping("/all")
     public ResponseEntity<List<Customer>> getAllCustomers() {
-    List<Customer> customers = customerService.findAllCustomers();
-    return new ResponseEntity<>(customers, HttpStatus.OK);
+        List<Customer> customers = customerService.findAllCustomers();
+        return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
-@GetMapping("/find/{customerId}")
-public ResponseEntity<Customer> getCustomerById(@PathVariable Long customerId) {
-    Customer customer= customerService.findCustomerById(customerId);
-    return new ResponseEntity<>(customer, HttpStatus.OK);
+    @GetMapping("/find/{customerId}")
+    public ResponseEntity<Customer> getCustomerById(@PathVariable Long customerId) {
+        Customer customer = customerService.findCustomerById(customerId);
+        return new ResponseEntity<>(customer, HttpStatus.OK);
 
-}
+    }
 
 
-@PostMapping("/add")
-//@CrossOrigin(origins = "http://localhost:4200")
-public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
+    @PostMapping("/add")
+    public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
         String responseMessage = null;
 
 
         try {
-            if (customer.getName()==null || customer.getName().isEmpty()){
+            if (customer.getName() == null || customer.getName().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("{ \"message\": \"Customer not added. Please provide all the required fields\" }");
 
             }
-            if (customer.getEmail()==null || customer.getEmail().isEmpty()){
+            if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("{ \"message\": \"Customer not added. Please provide all the required fields\" }");
             }
@@ -67,22 +65,22 @@ public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
             log.info(e.getMessage());
         }
 
-    return ResponseEntity.status(HttpStatus.CREATED)
-            .body("{ \"message\": \"Customer " +responseMessage+ " successfully\" }");
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("{ \"message\": \"Customer " + responseMessage + " successfully\" }");
     }
 
 
     @PutMapping("/update")
-public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) {
-Customer updatedCustomer = customerService.updateCustomer(customer);
-return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
-}
+    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) {
+        Customer updatedCustomer = customerService.updateCustomer(customer);
+        return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
+    }
 
-@DeleteMapping("/delete/{customerId}")
-public ResponseEntity<?> deleteCustomer(@PathVariable("customerId") Long customerId) {
-    customerService.deleteCustomer(customerId);
-    return new ResponseEntity<>(HttpStatus.OK);
-}
+    @DeleteMapping("/delete/{customerId}")
+    public ResponseEntity<?> deleteCustomer(@PathVariable("customerId") Long customerId) {
+        customerService.deleteCustomer(customerId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
 
 

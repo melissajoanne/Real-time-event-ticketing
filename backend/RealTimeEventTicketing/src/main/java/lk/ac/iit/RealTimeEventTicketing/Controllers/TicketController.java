@@ -5,7 +5,6 @@ import lk.ac.iit.RealTimeEventTicketing.ConfigLoader;
 import lk.ac.iit.RealTimeEventTicketing.Service.TicketPoolService;
 import lk.ac.iit.RealTimeEventTicketing.Service.TicketService;
 import lk.ac.iit.RealTimeEventTicketing.dto.*;
-import lk.ac.iit.RealTimeEventTicketing.model.Customer;
 import lk.ac.iit.RealTimeEventTicketing.model.Ticket;
 import lk.ac.iit.RealTimeEventTicketing.model.Vendor;
 import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
@@ -13,8 +12,6 @@ import lk.ac.iit.RealTimeEventTicketing.repo.VendorRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -29,7 +26,6 @@ public class TicketController {
     private final TicketPoolService ticketPoolService;
 
     private TicketRepo ticketRepo;
-    private TicketPurchaseRequest request;
     private TicketReserveRequest reserveRequest;
     private VendorRepo vendorRepo;
     private ConfigLoader configLoader;
@@ -47,11 +43,13 @@ public class TicketController {
         this.vendorRepo = vendorRepo;
     }
 
+    //vendor release tickets
     @PostMapping("/vendor/release")
-    public ResponseEntity<MessageResponse> addTicket(
-            @RequestHeader("x-vendor-id") Long vendorId,
-            @RequestBody TicketReleaseRequest releaseRequest) {
+    public ResponseEntity<MessageResponse> addTicket(@RequestHeader("x-vendor-id") Long vendorId, @RequestBody TicketReleaseRequest releaseRequest) {
         try {
+            if (!ticketPoolService.isRunning()) {
+                return new ResponseEntity<>(new MessageResponse("error", "Ticket handling operations are currently stopped."), HttpStatus.BAD_REQUEST);
+            }
             if (releaseRequest.getTicketsPerRelease() <= 0) {
                 return new ResponseEntity<>(new MessageResponse("error", "Invalid number of tickets per release."), HttpStatus.BAD_REQUEST);
             }
@@ -70,14 +68,6 @@ public class TicketController {
             return new ResponseEntity<>(new MessageResponse("error", "Error while releasing tickets: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-    @GetMapping("/count-available")
-    public ResponseEntity<Integer> getCountTickets() {
-        int availableTickets = ticketPoolService.countAvailableTickets();
-        return new ResponseEntity<>(availableTickets, HttpStatus.OK);
-    }
-
 
     @GetMapping("/find/{ticketId}")
     public ResponseEntity<String> findTicketById(@PathVariable Long ticketId) {
@@ -106,16 +96,19 @@ public class TicketController {
         }
     }
 
+    //Customer reserving ticket for one minute
     @PostMapping("/reserve")
     public synchronized ResponseEntity<Object> reserveTicket(@RequestHeader("x-customer-id") Long customerId) {
+        if (!ticketPoolService.isRunning()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Ticket handling operations are currently stopped."));
+        }
         System.out.println("Received customerId: " + customerId);
         try {
             Ticket reservedTicket = ticketPoolService.reserveNextAvailableTicket(customerId);
             return ResponseEntity.ok(reservedTicket);
         } catch (IllegalStateException e) {
             // Return a meaningful error message when no tickets are available
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse("No tickets available in the pool."));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("No tickets available in the pool."));
         }
     }
 
@@ -136,9 +129,12 @@ public class TicketController {
         }
     }
 
-
+    //Customer finalizes the reserved ticket
     @PostMapping("/finalize")
     public ResponseEntity<ResponseDto> finalizeSale(@RequestHeader("x-customer-id") Long customerId) {
+        if (!ticketPoolService.isRunning()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto("Ticket handling operations are currently stopped."));
+        }
         try {
             ticketPoolService.finalizeSale(customerId);
             return ResponseEntity.ok(new ResponseDto("Sale finalized successfully."));
@@ -148,7 +144,7 @@ public class TicketController {
         }
     }
 
-
+    //Count available tickets in the ticket pool
     @GetMapping("/count")
     public ResponseEntity<Integer> countAvailableTickets() {
         try {
@@ -156,8 +152,7 @@ public class TicketController {
             //ticketPoolService.broadcastTicketCount(availableTickets);
             return ResponseEntity.ok(availableTickets);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
 
     }
@@ -168,13 +163,54 @@ public class TicketController {
             int maxTicketCapacity = ticketPoolService.MAX_POOL_SIZE;
             return ResponseEntity.ok(maxTicketCapacity);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    //Get all the tickets in the database
     @GetMapping("/all")
     public ResponseEntity<List<Ticket>> findAllTickets() {
         return new ResponseEntity<>(ticketService.findAllTickets(), HttpStatus.OK);
+    }
+
+    //To start the ticket operations
+    @PostMapping("/start")
+    public ResponseEntity<Map<String, String>> startTicketHandling() {
+        ticketPoolService.start();
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Ticket handling operations started.");
+        return ResponseEntity.ok(response);
+    }
+
+    // To stop the ticket operations
+    @PostMapping("/stop")
+    public ResponseEntity<Map<String, String>> stopTicketHandling() {
+        ticketPoolService.stop();
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Ticket handling operations stopped.");
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/status")
+    public SimulationStatus getSimulationStatus() {
+        boolean isRunning = ticketPoolService.isRunning();
+        return new SimulationStatus(isRunning);
+    }
+
+    // Inner class to return status as JSON
+    public static class SimulationStatus {
+        private boolean isRunning;
+
+        public SimulationStatus(boolean isRunning) {
+            this.isRunning = isRunning;
+        }
+
+        public boolean isRunning() {
+            return isRunning;
+        }
+
+        public void setRunning(boolean running) {
+            isRunning = running;
+        }
     }
 
 

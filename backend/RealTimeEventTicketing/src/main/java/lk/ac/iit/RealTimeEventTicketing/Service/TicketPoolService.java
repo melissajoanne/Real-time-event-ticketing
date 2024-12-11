@@ -8,9 +8,12 @@ import lk.ac.iit.RealTimeEventTicketing.repo.TicketRepo;
 import org.junit.Test;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -217,6 +220,7 @@ public class TicketPoolService {
     private final SimpMessagingTemplate messagingTemplate;
     private final Config appConfig;
     private final Map<Long, Long> customerReservationTimestamps = new ConcurrentHashMap<>();
+    private final AtomicBoolean isRunning = new AtomicBoolean(true);
 
     @Autowired
     public TicketPoolService(TicketRepo ticketRepo, ConfigLoader configLoader, CustomerRepo customerRepo, SimpMessagingTemplate messagingTemplate, Config appConfig) {
@@ -227,9 +231,23 @@ public class TicketPoolService {
         this.appConfig = appConfig;
     }
 
-    // Add tickets to the pool (Producer)
+    public boolean isRunning() {
+        return isRunning.get();
+    }
 
+    public void start() {
+        isRunning.set(true);
+    }
+
+    public void stop() {
+        isRunning.set(false);
+    }
+
+    // Add tickets to the pool
     public void addTicketToPool(Ticket ticket) {
+        if (!isRunning()) {
+            throw new IllegalStateException("Ticket handling operations are currently stopped.");
+        }
         synchronized (this) {
             while (ticketPool.size() >= MAX_POOL_SIZE) {
                 try {
@@ -253,9 +271,7 @@ public class TicketPoolService {
 
     // Get all tickets in the pool
     public Map<String, Object> getAvailableTickets() {
-        List<Ticket> availableTickets = ticketPool.stream()
-                .filter(ticket -> ticket.getStatus().equals("Available"))
-                .collect(Collectors.toList());
+        List<Ticket> availableTickets = ticketPool.stream().filter(ticket -> ticket.getStatus().equals("Available")).collect(Collectors.toList());
 
         Map<String, Object> response = new HashMap<>();
         if (availableTickets.isEmpty()) {
@@ -267,7 +283,11 @@ public class TicketPoolService {
         }
         return response;
     }
+
     public Ticket reserveNextAvailableTicket(Long customerId) {
+        if (!isRunning()) {
+            throw new IllegalStateException("Ticket handling operations are currently stopped.");
+        }
         if (!customerExists(customerId)) {
             throw new IllegalStateException("Invalid customer ID: " + customerId);
         }
@@ -282,10 +302,7 @@ public class TicketPoolService {
             throw new IllegalStateException("Rate limit exceeded. Please wait before reserving another ticket.");
         }
 
-        Ticket ticket = ticketPool.stream()
-                .filter(t -> "Available".equals(t.getStatus()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No tickets available at the moment."));
+        Ticket ticket = ticketPool.stream().filter(t -> "Available".equals(t.getStatus())).findFirst().orElseThrow(() -> new IllegalStateException("No tickets available at the moment."));
 
         ReentrantLock lock = reservationLocks.get(ticket.getTicketId());
         lock.lock();
@@ -331,10 +348,7 @@ public class TicketPoolService {
             throw new IllegalStateException("Invalid customer ID: " + customerId);
         }
 
-        Ticket ticket = ticketPool.stream()
-                .filter(t -> customerId.equals(t.getCustomerId()) && "Reserved".equals(t.getStatus()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No reserved ticket found for customer " + customerId));
+        Ticket ticket = ticketPool.stream().filter(t -> customerId.equals(t.getCustomerId()) && "Reserved".equals(t.getStatus())).findFirst().orElseThrow(() -> new IllegalStateException("No reserved ticket found for customer " + customerId));
 
         ticket.setStatus("Sold");
         ticketPool.remove(ticket);
@@ -350,9 +364,7 @@ public class TicketPoolService {
 
     // Count available tickets
     public int countAvailableTickets() {
-        return (int) ticketPool.stream()
-                .filter(ticket -> "Available".equals(ticket.getStatus()))
-                .count();
+        return (int) ticketPool.stream().filter(ticket -> "Available".equals(ticket.getStatus())).count();
     }
 
     // Helper method to check if a customer exists

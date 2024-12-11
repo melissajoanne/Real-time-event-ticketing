@@ -12,20 +12,20 @@ import java.io.IOException;
 @EnableAsync
 public class RealTimeEventTicketingApplication implements CommandLineRunner {
 
-	@Autowired
-	ConfigLoader configLoader;
+    @Autowired
+    ConfigLoader configLoader;
 
 
-	public static void main(String[] args) throws IOException {
-		SpringApplication.run(RealTimeEventTicketingApplication.class, args);
+    public static void main(String[] args) throws IOException {
+        SpringApplication.run(RealTimeEventTicketingApplication.class, args);
 
-	}
+    }
 
-	public void run(String... args) throws Exception {
-		System.out.println(configLoader.getAppConfig().toString());
+    public void run(String... args) throws Exception {
+        System.out.println(configLoader.getAppConfig().toString());
 
 
-	}
+    }
 
 
 }

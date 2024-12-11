@@ -33,7 +33,6 @@ public class TicketService {
     private final TicketPoolService ticketPoolService;
     private final ConfigLoader configLoader;
 
-    private Vendor vendor;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);  // Limit of 10 vendors
 
@@ -88,7 +87,7 @@ public class TicketService {
         return ticketRepo.findAll();
     }
 
-//    @Async("taskExecutor")
+    //    @Async("taskExecutor")
 //    public CompletableFuture<Void> releaseTickets(Long vendorId, TicketReleaseRequest releaseRequest) {
 //        return CompletableFuture.runAsync(() -> {
 //            long lastReleaseTime = System.currentTimeMillis(); // Track the last release time for the vendor
@@ -141,33 +140,36 @@ public class TicketService {
 //            }
 //        }
 //    }
-@Async("taskExecutor")
-public CompletableFuture<Void> releaseTickets(Long vendorId, TicketReleaseRequest releaseRequest) {
-    return CompletableFuture.runAsync(() -> {
-        try {
-            for (int i = 0; i < releaseRequest.getTicketsPerRelease(); i++) {
-                // Create a new ticket
-                Ticket ticket = new Ticket();
-                ticket.setVendorId(vendorId);
-                ticket.setStatus("Available");
-                ticket.setType(releaseRequest.getTicketType());
-                ticket.setPrice(releaseRequest.getTicketPrice());
-
-                addTicket(ticket); // Save the ticket to the database
-                ticketPoolService.addTicketToPool(ticket); // Add the ticket to the pool
-
-                logger.info("Thread: {}, Vendor {} released ticket {}. Type: {}, Price: {}",
-                        Thread.currentThread().getName(), vendorId, ticket.getTicketId(), ticket.getType(), ticket.getPrice());
-
-                // Sleep for the configured interval
-                Thread.sleep(configLoader.getAppConfig().getTicketReleaseRate() * 1000L);
-            }
-        } catch (Exception e) {
-            logger.error("Error while releasing tickets for vendor {}: {}", vendorId, e.getMessage(), e);
-            throw new RuntimeException("Error while releasing tickets: " + e.getMessage(), e);
+    @Async("taskExecutor")
+    public CompletableFuture<Void> releaseTickets(Long vendorId, TicketReleaseRequest releaseRequest) {
+        if (!ticketPoolService.isRunning()) {
+            throw new IllegalStateException("Ticket handling operations are currently stopped.");
         }
-    }, executorService);
-}
+
+        return CompletableFuture.runAsync(() -> {
+            try {
+                for (int i = 0; i < releaseRequest.getTicketsPerRelease(); i++) {
+                    // Create a new ticket
+                    Ticket ticket = new Ticket();
+                    ticket.setVendorId(vendorId);
+                    ticket.setStatus("Available");
+                    ticket.setType(releaseRequest.getTicketType());
+                    ticket.setPrice(releaseRequest.getTicketPrice());
+
+                    addTicket(ticket); // Save the ticket to the database
+                    ticketPoolService.addTicketToPool(ticket); // Add the ticket to the pool
+
+                    logger.info("Thread: {}, Vendor {} released ticket {}. Type: {}, Price: {}", Thread.currentThread().getName(), vendorId, ticket.getTicketId(), ticket.getType(), ticket.getPrice());
+
+                    // Sleep for the configured interval
+                    Thread.sleep(configLoader.getAppConfig().getTicketReleaseRate() * 1000L);
+                }
+            } catch (Exception e) {
+                logger.error("Error while releasing tickets for vendor {}: {}", vendorId, e.getMessage(), e);
+                throw new RuntimeException("Error while releasing tickets: " + e.getMessage(), e);
+            }
+        }, executorService);
+    }
 
 }
 

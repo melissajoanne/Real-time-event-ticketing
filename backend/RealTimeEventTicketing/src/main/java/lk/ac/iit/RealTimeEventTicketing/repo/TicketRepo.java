@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TicketRepo extends JpaRepository<Ticket, Long> {
-   // List<Ticket> findByVendorAndEvent(Vendor vendor, Event event);
 
 }

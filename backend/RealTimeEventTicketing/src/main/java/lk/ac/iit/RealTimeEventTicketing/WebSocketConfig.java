@@ -12,15 +12,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Register WebSocket endpoint with CORS support
+        // WebSocket endpoint with CORS support
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("http://localhost:4200") // CORS for WebSocket handshake
-                .withSockJS(); // Allow fallback options (e.g., if WebSocket is not available)
+                .withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");  // Enable a simple in-memory broker
+        registry.enableSimpleBroker("/topic");
         registry.setApplicationDestinationPrefixes("/app");
     }
 }

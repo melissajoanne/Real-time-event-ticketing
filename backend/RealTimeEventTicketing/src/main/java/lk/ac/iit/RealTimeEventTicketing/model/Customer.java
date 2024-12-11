@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Entity
 @Data
-public class Customer extends User{
+public class Customer extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
@@ -33,7 +33,6 @@ public class Customer extends User{
     public void setCustomerId(long customerId) {
         this.customerId = customerId;
     }
-
 
 
 }

@@ -1,8 +1,13 @@
-<div class="button-container">
+<div class="status-container">
+    <p class="simulation-status">{{ getSimulationStatus() }}</p>
+  </div>
+   <div class="button-container">
     <button (click)="start()"class="start-button">Start</button>
     <button (click)="stop()" class="stop-button">Stop</button>
     </div>
-    <div>
+    <div class="content-container">
+    <div class="form-container">
+        <h2>Configuration form</h2>
     <form (ngSubmit)="onSubmit()">
       <label for="totalTickets">Total Tickets:</label>
       <input type="number" id="totalTickets" [(ngModel)]="totalTickets" name="totalTickets" required>
@@ -13,14 +18,16 @@
       <label for="customerRetrievalRate">Customer Retrieval Rate:</label>
       <input type="number" id="customerRetrievalRate" [(ngModel)]="customerRetrievalRate" name="customerRetrievalRate" required>
   
-      <label for="vendorReleaseInterval">Vendor Release Interval:</label>
-      <input type="number" id="vendorReleaseInterval" [(ngModel)]="vendorReleaseInterval" name="vendorReleaseInterval" required>
+      <label for="ticketReleaseRate">Ticket Release Rate:</label>
+      <input type="number" id="ticketReleaseRate" [(ngModel)]="ticketReleaseRate" name="vendorReleaseInterval" required>
   
       <button type="submit">Submit</button>
     </form>
+    </div>
     
-  <h3> Ticket updates</h3>
+ 
     <div class="table-container">
+        <h3> Ticket updates</h3>
     <table>
         <thead>
           <tr>
@@ -33,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let ticket of tickets">
+            <tr *ngFor="let ticket of tickets" [ngClass]="{'sold-row': ticket.status === 'Sold'}">
             <td>{{ ticket.ticketId }}</td>
             <td>{{ ticket.vendorId }}</td>
             <td>{{ ticket.status }}</td>
