@@ -214,7 +214,7 @@ public class TicketPoolService {
 
     private final TicketRepo ticketRepo;
     public final int MAX_POOL_SIZE;
-    private final ConcurrentLinkedQueue<Ticket> ticketPool = new ConcurrentLinkedQueue<>(); // Changed to ConcurrentLinkedQueue
+    private final ConcurrentLinkedQueue<Ticket> ticketPool = new ConcurrentLinkedQueue<>();
     private final ConcurrentHashMap<Long, ReentrantLock> reservationLocks = new ConcurrentHashMap<>();
     private final CustomerRepo customerRepo;
     private final SimpMessagingTemplate messagingTemplate;
