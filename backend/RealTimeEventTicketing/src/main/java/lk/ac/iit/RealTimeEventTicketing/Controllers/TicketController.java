@@ -28,8 +28,7 @@ public class TicketController {
     private TicketRepo ticketRepo;
     private TicketReserveRequest reserveRequest;
     private VendorRepo vendorRepo;
-    private ConfigLoader configLoader;
-    private Config appConfig;
+
 
     private Ticket ticket;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);  // Limit of 10 vendors

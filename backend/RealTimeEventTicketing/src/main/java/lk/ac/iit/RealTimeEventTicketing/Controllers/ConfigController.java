@@ -30,10 +30,6 @@ public class ConfigController {
     }
 
 
-    @GetMapping("/current")
-    public ResponseEntity<Config> getCurrentConfig() {
-        return ResponseEntity.ok(config);
-    }
 
 
 }
