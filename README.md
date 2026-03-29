@@ -130,7 +130,7 @@ Clone the Repository:
 git clone https://github.com/melissajoanne/Real-time-event-ticketing.git
  
 Install Dependencies:
-Ensure you have Java 17+ and Maven installed. Navigate to the project directory and run:
+Ensure you have Java 23+ and Maven installed. Navigate to the project directory and run:
 mvn clean install
  
 Configure the Database
